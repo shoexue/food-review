@@ -1,40 +1,93 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# How to set up the project
 
-## Getting Started
+1. MySql setup
 
-First, run the development server:
+To install MySql (ex. Ubuntu)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```
+sudo apt install mysql-server
+mysql --version
+sudo /etc/init.d/mysql start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+MySql Setup:
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+```
+sudo mysql_secure_installation
+```
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+> ```
+> Securing the MySQL server deployment.
+> Enter password for user root:
+>
+> VALIDATE PASSWORD COMPONENT can be used to test passwords
+> and improve security. It checks the strength of password
+> and allows the users to set only those passwords which are
+> secure enough. Would you like to setup VALIDATE PASSWORD component?
+>
+> Press y|Y for Yes, any other key for No: n
+> Using existing password for root.
+> Change the password for root ? ((Press y|Y for Yes, any other key for No) : n
+>
+> ... skipping.
+> By default, a MySQL installation has an anonymous user,
+> allowing anyone to log into MySQL without having to have
+> a user account created for them. This is intended only for
+> testing, and to make the installation go a bit smoother.
+> You should remove them before moving into a production
+> environment.
+>
+> Remove anonymous users? (Press y|Y for Yes, any other key for No) : y
+> Success.
+>
+> Normally, root should only be allowed to connect from
+> 'localhost'. This ensures that someone cannot guess at
+> the root password from the network.
+>
+> Disallow root login remotely? (Press y|Y for Yes, any other key for No) : y
+> Success.
+>
+> By default, MySQL comes with a database named 'test' that
+> anyone can access. This is also intended only for testing,
+> and should be removed before moving into a production
+> environment.
+>
+> Remove test database and access to it? (Press y|Y for Yes, any other key for No) : n
+>
+> ... skipping.
+> Reloading the privilege tables will ensure that all changes
+> made so far will take effect immediately.
+>
+> Reload privilege tables now? (Press y|Y for Yes, any other key for No) : y
+> Success.
+>
+> All done!
+> ```
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+For simplicity's sake, for your dev environemnt, set the password to 'root' or something else easy to remember. If you change it to something other than 'root', save it as you will need it later for setting up environment variables.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+2. Project setup
 
-## Learn More
+Make an env file (a file called `.env` in the root folder of the project (the same folder that has `package.json` in it)) with the following line:
 
-To learn more about Next.js, take a look at the following resources:
+```
+DATABASE_URL="mysql://root:root@localhost:3306/reviews"
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+If you changed the root password or made a custom config, the format for the connection string is
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```
+DATABASE_URL="mysql://<USERNAME>:<PASSWORD>@localhost:<PORT>/reviews"
+```
 
-## Deploy on Vercel
+Port 3306 is the mysql default.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Then run
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+```
+pnpm i
+npx prisma db push
+npx prisma generate
+```
+
+You can run `npx prisma studio` to visualize data in the databases;
