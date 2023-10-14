@@ -55,11 +55,14 @@ export default function Item() {
       ) : (
         <>
           <h1 className='scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center'>
-            {`New Rez ${item.name} Review's`}
+            {`New Rez ${item.name ?? ''} Review's`}
           </h1>
-          <div className='relative w-full h-full'>
-            <Image src={getImage(item.imageUrl)} fill alt='' />
-          </div>
+          <Image
+            src={getImage(item.imageUrl)}
+            width={300}
+            height={300}
+            alt=''
+          />
           <ReviewButton
             itemId={item.id}
             onSuccess={refetch}
@@ -72,36 +75,25 @@ export default function Item() {
         {reviews.map((r) => {
           return (
             <Card key={r.id} className=''>
-              {/* <CardHeader className='flex flex-row justify-between'> */}
-              <CardHeader className=''>
+              <CardHeader>
                 <div className='flex flex-row items-center'>
-                  {/* {[...Array(r.score)].map((s) => {
-                    return (
-                      <StarSolidIcon key={s} className="w-4 h-4" />
-                    );
-                  })
-                  }
-                  {[...Array(10 - r.score)].map((s) => {
-                    return (
-                      <StarOutlineIcon key={s} className="w-4 h-4" />
-                    );
-                  })
-                  } */}
-                  <StarSolidIcon className='w-4 h-4' />
+                  {[...Array(r.rating)].map((s) => {
+                    return <StarSolidIcon key={s} className='w-4 h-4' />;
+                  })}
+                  {[...Array(10 - r.rating)].map((s) => {
+                    return <StarOutlineIcon key={s} className='w-4 h-4' />;
+                  })}
                   <p className='align-middle'>{r.rating}/10</p>
                 </div>
                 <div>
-                  <CardTitle>
-                    {/* {r.title} */}
-                    Title
-                  </CardTitle>
+                  <CardTitle>{r.title}</CardTitle>
                   <CardDescription>
                     {formatDate(new Date(r.createdAt))}
                   </CardDescription>
                 </div>
               </CardHeader>
               <CardContent>
-                <p>{r.comment}</p>
+                <p className='ml-6 my-2'>{r.comment}</p>
               </CardContent>
               <CardFooter>
                 <Button
