@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Button } from '@/components/ui/button';
+import { StarIcon as StarSolidIcon } from '@heroicons/react/24/solid';
 
 export default function Home() {
   const { items, refetch } = useItems();
@@ -31,35 +32,8 @@ export default function Home() {
   };
 
   return (
-    <div>
-      {items.map((i) => {
-        return (
-          <Card key={i.id} className="">
-            <CardHeader>
-              <CardTitle className='hover:underline'>
-                <Link href={`/${i.id}`}>
-                  {i.name}
-                </Link>
-              </CardTitle>
-              <CardDescription>
-                <p>{i.totalReviews} total reviews</p>
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="">
-                <p>{i.rating} / 10</p>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <ReviewButton
-                itemId={i.id}
-                onSuccess={() => refetch()}
-                onFail={() => { }}
-              />
-            </CardFooter>
-          </Card>
-        );
-      })}
+    <div className='flex flex-col items-center gap-y-4 mx-12 md:mx-48'>
+      <h1 className='scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center'>New Rez's Dishes</h1>
       <Button
         onClick={() => {
           addItem();
@@ -67,6 +41,52 @@ export default function Home() {
       >
         Add Item
       </Button>
-    </div>
+      <div className='grid w-full grid-cols-1 lg:grid-cols-3 gap-4'>
+        {items.map((i) => {
+          return (
+            <Link href={`/${i.id}`} className='group'>
+              <Card key={i.id} className="group-hover:bg-slate-50">
+                <CardContent className='h-64 bg-slate-100 flex items-center justify-center'>
+                  Image
+                </CardContent>
+                <CardHeader className='flex flex-row justify-between'>
+                  <div>
+                    <CardTitle className='group-hover:underline'>
+                      {i.name}
+                    </CardTitle>
+                    <CardDescription>
+                      <p>{i.totalReviews} total reviews</p>
+                    </CardDescription>
+                  </div>
+                  <div className='flex flex-row items-center'>
+                    {/* {[...Array(r.score)].map((s) => {
+                    return (
+                      <StarSolidIcon key={s} className="w-4 h-4" />
+                    );
+                  })
+                  }
+                  {[...Array(10 - r.score)].map((s) => {
+                    return (
+                      <StarOutlineIcon key={s} className="w-4 h-4" />
+                    );
+                  })
+                  } */}
+                    <StarSolidIcon className="w-4 h-4" />
+                    <p className='align-middle'>{i.rating}/10</p>
+                  </div>
+                </CardHeader>
+                <CardFooter>
+                  <ReviewButton
+                    itemId={i.id}
+                    onSuccess={() => refetch()}
+                    onFail={() => { }}
+                  />
+                </CardFooter>
+              </Card>
+            </Link>
+          );
+        })}
+      </div>
+    </div >
   );
 }
