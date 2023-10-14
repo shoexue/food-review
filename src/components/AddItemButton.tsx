@@ -13,6 +13,8 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { StarIcon as StarOutlineIcon } from '@heroicons/react/24/outline';
 import { toast } from '@/components/ui/use-toast';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -22,6 +24,7 @@ import * as z from 'zod';
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -30,65 +33,55 @@ import {
 import { Toaster } from '@/components/ui/toaster';
 import { Input } from './ui/input';
 import StarRating from './StarRating';
-import { applySnapshot, getSnapshot } from 'mobx-state-tree';
-import { store } from '@/lib/types';
 // import { toast } from "@/components/ui/use-toast"
 
 const FormSchema = z.object({
-  review: z
-    .string()
-    .min(10, {
-      message: 'Review must be at least 10 characters long.',
-    })
-    .max(160, {
-      message: 'Review must not be longer than 160 characters.',
-    }),
-  title: z
+  name: z
     .string()
     .min(1, {
-      message: 'Review title must be at least 1 character long',
+      message: 'Item name must be at least 1 characters long.',
     })
-    .max(30, { message: 'Review title must not be longer than 30 characters' }),
-  score: z
-    .number()
-    .min(0, { message: 'min is 0' })
-    .max(10, { message: 'max is 10' }),
+    .max(100, {
+      message: 'Item name must not be longer than 100 characters.',
+    }),
+  tags: z.optional(z.array(z.string())),
 });
 
-interface IReviewButtonProps {
+interface IAddItemButtonProps {
   itemId: string;
+  onSuccess: VoidFunction;
+  onFail: VoidFunction;
 }
 
 type IFormData = z.infer<typeof FormSchema>;
 
-const ReviewButton: React.FC<IReviewButtonProps> = ({ itemId }) => {
-  const makeReview = async (data: IFormData) => {
-    const item = store.findItemById(itemId);
-    if (item) {
-      const snapshot = getSnapshot(item);
+const AddItemButton: React.FC<IAddItemButtonProps> = ({
+  onSuccess,
+  onFail,
+}) => {
+  const makeItem = async (data: IFormData) => {
+    console.log('make item');
 
-      const reviewData = {
-        score: data.score + '',
-        comment: data.review,
-        itemId,
-        title: data.title,
-      };
+    const bodyParams = new URLSearchParams({
+      name: data.name,
+    });
 
-      await fetch('/api/review/create', {
+    data.tags?.forEach((t) => {
+      bodyParams.append('tags', t);
+    });
+
+    try {
+      const res = await fetch('/api/review/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: new URLSearchParams(reviewData).toString(),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          item.addReview(data);
-        })
-        .catch((e) => {
-          console.error(e);
-          applySnapshot(item, snapshot);
-        });
+        body: bodyParams.toString(),
+      });
+      console.log(res);
+      onSuccess();
+    } catch (e) {
+      onFail();
     }
   };
 
@@ -97,6 +90,7 @@ const ReviewButton: React.FC<IReviewButtonProps> = ({ itemId }) => {
   });
 
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
+    console.log(data);
     toast({
       title: 'You submitted the following values:',
       description: (
@@ -105,7 +99,7 @@ const ReviewButton: React.FC<IReviewButtonProps> = ({ itemId }) => {
         </pre>
       ),
     });
-    makeReview(data);
+    makeItem(data);
   };
 
   return (
@@ -128,7 +122,7 @@ const ReviewButton: React.FC<IReviewButtonProps> = ({ itemId }) => {
           <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
             <FormField
               control={form.control}
-              name='title'
+              name='name'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Title</FormLabel>
@@ -143,38 +137,6 @@ const ReviewButton: React.FC<IReviewButtonProps> = ({ itemId }) => {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name='review'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Review</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      placeholder='What did you think of this dish?'
-                      className='resize-none'
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='score'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Score</FormLabel>
-                  <StarRating
-                    onStarClick={(stars) => {
-                      form.setValue('score', stars);
-                    }}
-                  ></StarRating>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
             <DialogFooter>
               <Button type='submit'>Submit</Button>
             </DialogFooter>
@@ -185,4 +147,4 @@ const ReviewButton: React.FC<IReviewButtonProps> = ({ itemId }) => {
   );
 };
 
-export default ReviewButton;
+export default AddItemButton;

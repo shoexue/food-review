@@ -36,7 +36,6 @@ const GET: NextApiHandler = async (req, res) => {
     result = await prisma.item.findMany({
       ...includeParams,
     });
-    res.json(result);
   }
 
   return res.json(result);

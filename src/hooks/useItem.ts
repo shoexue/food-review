@@ -32,7 +32,6 @@ const useItem = (params: UseItemParams) => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
         setItems(data);
         setLoading(false);
       })

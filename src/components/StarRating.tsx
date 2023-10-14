@@ -9,7 +9,6 @@ interface StarRatingProps {
 
 const StarRating: React.FC<StarRatingProps> = ({ max = 10, onStarClick }) => {
   const [stars, setStars] = useState(0);
-  console.log(stars + ' stars');
 
   const onClick = (stars: number) => {
     setStars(stars);
