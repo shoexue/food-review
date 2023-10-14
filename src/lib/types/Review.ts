@@ -35,6 +35,7 @@ const ReviewArray = types
           });
         }),
       ]);
+      return self;
     },
     addReview(review: PrismaReview) {
       const { createdAt: _createdAt, ...rest } = review;

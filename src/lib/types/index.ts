@@ -64,6 +64,21 @@ const RootStore = types
       const i = self.items.find((i) => i.id === id);
       return i;
     },
+    addItem(item: PrismItem, reviews: PrismaReview[]) {
+      const { createdAt, updatedAt, ...rest } = item;
+
+      const x = ReviewArray.create().init(reviews);
+
+      const i = Item.create({
+        ...rest,
+        reviews: x,
+        createdAt: new Date(createdAt),
+        updatedAt: new Date(updatedAt),
+        tags: TagArray.create(),
+      });
+
+      self.items.push(i);
+    },
   }));
 
 export type IStore = Instance<typeof RootStore>;

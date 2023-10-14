@@ -2,7 +2,6 @@ import { observer } from 'mobx-react-lite';
 import { store } from '@/lib/types';
 import { getImage } from '@/lib/utils';
 import ReviewButton from '../ReviewButton';
-import { Button } from '../ui/button';
 import Image from 'next/image';
 import Link from 'next/link';
 import {
@@ -14,33 +13,15 @@ import {
   CardFooter,
 } from '../ui/card';
 import { StarIcon } from '@heroicons/react/24/solid';
+import AddItemButton from '@/components/AddItemButton';
 
 const HomeCards = observer(() => {
-  const addItem = async () => {
-    await fetch('/api/item/create', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({
-        name: 'test ' + store.items.length,
-      }),
-    });
-
-    // refetch();
-  };
-
+  const { items } = store;
   return (
     <>
-      <Button
-        onClick={() => {
-          addItem();
-        }}
-      >
-        Add Item
-      </Button>
+      <AddItemButton />
       <div className='grid w-full grid-colc-1 lg:grid-cols-3 gap-4'>
-        {store.items.map((i) => {
+        {items.map((i) => {
           return (
             <Card key={i.id} className='group-hover:bg-slate-50'>
               <Link href={`/${i.slug}`} className='group' key={i.id}>
@@ -55,7 +36,7 @@ const HomeCards = observer(() => {
                       {i.name}
                     </CardTitle>
                     <CardDescription>
-                      {`${i.totalReviews} total reviews`}
+                      {`${i.reviews.reviews.length} total reviews`}
                     </CardDescription>
                   </div>
                   <div className='flex flex-row items-center'>

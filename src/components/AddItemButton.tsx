@@ -1,4 +1,4 @@
-'use client'; //Form needs use client
+'use client';
 
 import { PlusIcon } from '@heroicons/react/24/outline';
 import React from 'react';
@@ -31,66 +31,47 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Toaster } from '@/components/ui/toaster';
-import { Input } from './ui/input';
-import StarRating from './StarRating';
+import { Input } from '@/components/ui/input';
+import StarRating from '@/components/StarRating';
+import { store } from '@/lib/types';
+import { makeItem } from '@/lib/review/make-item';
+import { makeReview } from '@/lib/review/make-review';
+import { getItem } from '@/lib/review/get-item';
 // import { toast } from "@/components/ui/use-toast"
 
 const FormSchema = z.object({
   name: z
     .string()
-    .min(1, {
-      message: 'Item name must be at least 1 characters long.',
+    .min(2, {
+      message: 'Dish name must be at least 2 characters long.',
     })
-    .max(100, {
-      message: 'Item name must not be longer than 100 characters.',
+    .max(20, {
+      message: 'Dish name must not be longer than 20 characters.',
     }),
-  tags: z.optional(z.array(z.string())),
+  review: z
+    .string()
+    .min(10, {
+      message: 'Review must be at least 10 characters long.',
+    })
+    .max(160, {
+      message: 'Review must not be longer than 160 characters.',
+    }),
+  title: z
+    .string()
+    .min(1, {
+      message: 'Review title must be at least 1 character long',
+    })
+    .max(30, { message: 'Review title must not be longer than 30 characters' }),
+  score: z
+    .number()
+    .min(0, { message: 'min is 0' })
+    .max(10, { message: 'max is 10' }),
 });
-
-interface IAddItemButtonProps {
-  itemId: string;
-  onSuccess: VoidFunction;
-  onFail: VoidFunction;
-}
 
 type IFormData = z.infer<typeof FormSchema>;
 
-const AddItemButton: React.FC<IAddItemButtonProps> = ({
-  onSuccess,
-  onFail,
-}) => {
-  const makeItem = async (data: IFormData) => {
-    console.log('make item');
-
-    const bodyParams = new URLSearchParams({
-      name: data.name,
-    });
-
-    data.tags?.forEach((t) => {
-      bodyParams.append('tags', t);
-    });
-
-    try {
-      const res = await fetch('/api/review/create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: bodyParams.toString(),
-      });
-      console.log(res);
-      onSuccess();
-    } catch (e) {
-      onFail();
-    }
-  };
-
-  const form = useForm<IFormData>({
-    resolver: zodResolver(FormSchema),
-  });
-
-  const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    console.log(data);
+const AddItemButton: React.FC<{}> = () => {
+  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     toast({
       title: 'You submitted the following values:',
       description: (
@@ -99,22 +80,33 @@ const AddItemButton: React.FC<IAddItemButtonProps> = ({
         </pre>
       ),
     });
-    makeItem(data);
+
+    const _item = await makeItem(data);
+    const review = await makeReview({ ...data, itemId: _item.id });
+    const item = await getItem(_item.id); // necessary because this will have the correct score
+
+    store.addItem(item, [review]);
   };
+
+  const form = useForm<IFormData>({
+    resolver: zodResolver(FormSchema),
+  });
 
   return (
     <Dialog>
       <Toaster />
       <DialogTrigger asChild>
         <Button>
-          <PlusIcon className='w-4 h-4 mr-2' /> Review
+          <PlusIcon className='w-4 h-4 mr-2' /> Item
         </Button>
       </DialogTrigger>
       <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader>
-          <DialogTitle>Add a Review</DialogTitle>
+          <DialogTitle>Add a Food Item</DialogTitle>
           <DialogDescription>
-            {"Add a review of the dish. Click submit when you're done."}
+            {
+              "Add a food item that doesn't have any reviews yet. Click submit when you're done."
+            }
           </DialogDescription>
         </DialogHeader>
 
@@ -125,7 +117,25 @@ const AddItemButton: React.FC<IAddItemButtonProps> = ({
               name='name'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Title</FormLabel>
+                  <FormLabel>Dish Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder='The dishes name'
+                      className='resize-none'
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name='title'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Review Title</FormLabel>
                   <FormControl>
                     <Input
                       placeholder='Your review title'
@@ -133,6 +143,38 @@ const AddItemButton: React.FC<IAddItemButtonProps> = ({
                       {...field}
                     />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='review'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Item Details</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder='What did you think of this dish?'
+                      className='resize-none'
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='score'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Score</FormLabel>
+                  <StarRating
+                    onStarClick={(stars) => {
+                      form.setValue('score', stars);
+                    }}
+                  ></StarRating>
                   <FormMessage />
                 </FormItem>
               )}

@@ -131,7 +131,7 @@ const ReviewButton: React.FC<IReviewButtonProps> = ({ itemId }) => {
               name='title'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Title</FormLabel>
+                  <FormLabel>Review Title</FormLabel>
                   <FormControl>
                     <Input
                       placeholder='Your review title'

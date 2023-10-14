@@ -1,7 +1,7 @@
 import { Instance, types } from 'mobx-state-tree';
 import { ReviewArray } from './Review';
 import { TagArray } from './Tag';
-import { Item as PrismaItem, Review as PrismaReview } from '@prisma/client';
+import { Item, Review as PrismaReview } from '@prisma/client';
 
 const Item = types
   .model('Item', {
@@ -9,7 +9,6 @@ const Item = types
     slug: '',
     createdAt: new Date(),
     updatedAt: new Date(),
-    totalReviews: 0,
     name: '',
     rating: 0.0,
     imageUrl: '',
@@ -18,7 +17,9 @@ const Item = types
   })
   .actions((self) => ({
     addReview(review: PrismaReview) {
-      self.totalReviews++;
+      const numReviews = self.reviews.reviews.length;
+      self.rating =
+        (self.rating * numReviews + review.rating) / (numReviews + 1);
       self.reviews.addReview(review);
     },
   }));

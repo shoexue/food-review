@@ -5,6 +5,7 @@ import HomeCards from '@/components/HomeCards/HomeCards';
 import { observer } from 'mobx-react-lite';
 import { getSnapshot } from 'mobx-state-tree';
 import { store } from '@/lib/types';
+import AddItemButton from '@/components/AddItemButton';
 
 const Home = observer(() => {
   console.log('render with store', getSnapshot(store));
