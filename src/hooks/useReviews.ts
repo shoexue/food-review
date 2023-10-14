@@ -19,7 +19,7 @@ const useReviews = (params: UseReviewsParams) => {
       itemId: params.itemId,
     });
 
-    fetch(`/api/get-reviews?${queryParams}`, {
+    fetch(`/api/review/get?${queryParams}`, {
       method: 'GET',
     })
       .then((res) => res.json())

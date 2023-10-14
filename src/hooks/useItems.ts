@@ -10,7 +10,7 @@ const useItems = () => {
     setLoading(true);
     setError('');
 
-    fetch('/api/get-items', {
+    fetch('/api/item/get', {
       method: 'GET',
     })
       .then((res) => res.json())

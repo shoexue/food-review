@@ -6,7 +6,7 @@ const handle: NextApiHandler = async (req, res) => {
   const { score, comment, itemId } = req.body;
   const result = await prisma.review.create({
     data: {
-      score: parseInt(score),
+      rating: parseInt(score),
       comment,
       itemId,
     },

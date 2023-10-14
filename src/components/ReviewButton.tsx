@@ -62,7 +62,7 @@ const ReviewButton: React.FC<IReviewButtonProps> = ({
       itemId,
     };
     try {
-      const res = await fetch('/api/create-review', {
+      const res = await fetch('/api/review/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',

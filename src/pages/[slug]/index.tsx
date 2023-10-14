@@ -1,7 +1,8 @@
 import ReviewButton from '@/components/ReviewButton';
 import useReviews from '@/hooks/useReviews';
-import { extractSlug, formatDate } from '@/lib/utils';
+import { extractSlug, formatDate, getImage } from '@/lib/utils';
 import { useRouter } from 'next/router';
+import Image from 'next/image';
 import {
   Card,
   CardContent,
@@ -10,7 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import useItems from '@/hooks/useItems';
+import useItem from '@/hooks/useItem';
 import {
   StarIcon as StarOutlineIcon,
   ArrowLeftIcon,
@@ -18,15 +19,29 @@ import {
 import { StarIcon as StarSolidIcon } from '@heroicons/react/24/solid';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import Spinner from '@/components/Spinner';
 
 export default function Item() {
   const route = useRouter();
-  const itemId = extractSlug(route.query.itemId);
-  const { items, refetch: refetchitems } = useItems();
+  const slug = extractSlug(route.query.slug);
+
+  const { item, loading, refetch: refetchitem } = useItem({ slug });
+
+  console.log(item);
 
   const { reviews, refetch } = useReviews({
-    itemId,
+    itemId: item?.id ?? '',
   });
+
+  const voteHelpful = (reviewId: string) => {
+    fetch('/api/helpful', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({ reviewId }).toString(),
+    }).then(() => refetch());
+  };
 
   return (
     <div className='flex flex-col items-center gap-y-4 mx-12'>
@@ -35,18 +50,26 @@ export default function Item() {
           <ArrowLeftIcon className='w-4 h-4 mr-2' /> Home
         </Button>
       </Link>
-      <h1 className='scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center'>
-        New Rez {/*i.name*/} Review's
-      </h1>
-      {/* ADD AN IMAGE */}
+      {loading ? (
+        <Spinner />
+      ) : (
+        <>
+          <h1 className='scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center'>
+            {`New Rez ${item.name} Review's`}
+          </h1>
+          <div className='relative w-full h-full'>
+            <Image src={getImage(item.imageUrl)} fill alt='' />
+          </div>
+          <ReviewButton
+            itemId={slug}
+            onSuccess={() => {
+              refetch();
+            }}
+            onFail={() => {}}
+          />
+        </>
+      )}
       {/* COULD REMOVE THE REVIEW BUTTON AND JUST ADD THE FORM HERE */}
-      <ReviewButton
-        itemId={itemId}
-        onSuccess={() => {
-          refetch();
-        }}
-        onFail={() => {}}
-      />
       <div className='grid grid-cols-1 gap-4 w-full max-w-2xl'>
         {reviews.map((r) => {
           return (
@@ -67,7 +90,7 @@ export default function Item() {
                   })
                   } */}
                   <StarSolidIcon className='w-4 h-4' />
-                  <p className='align-middle'>{r.score}/10</p>
+                  <p className='align-middle'>{r.rating}/10</p>
                 </div>
                 <div>
                   <CardTitle>
@@ -83,7 +106,13 @@ export default function Item() {
                 <p>{r.comment}</p>
               </CardContent>
               <CardFooter>
-                {/* _ people found this review helpful. */}
+                <Button
+                  onClick={() => {
+                    voteHelpful(r.id);
+                  }}
+                >
+                  {`${r.helpfulVotes} people found this review helpful.`}
+                </Button>
               </CardFooter>
             </Card>
           );

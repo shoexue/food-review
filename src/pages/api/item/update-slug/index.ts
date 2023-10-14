@@ -1,17 +1,15 @@
 import prisma from '@/lib/prisma';
+import { Item, TagOnItem } from '@prisma/client';
 import { NextApiHandler } from 'next';
 
 // api request to update an item
 const handle: NextApiHandler = async (req, res) => {
-  const { name, imageUrl, id } = req.body;
+  const { id, slug } = req.body;
   const result = await prisma.item.update({
     where: {
       id,
     },
-    data: {
-      name,
-      imageUrl: imageUrl,
-    },
+    data: { slug },
   });
   res.json(result);
 };

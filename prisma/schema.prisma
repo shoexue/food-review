@@ -19,13 +19,33 @@ model Item {
   rating    Float      @default(0)
   imageUrl  String
   reviews   Review[]
+  tags      TagOnItem[]
+  slug      String    @unique
 }
 
 model Review {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
-  score     Int
+  rating    Int
   comment   String
   Item      Item     @relation(fields: [itemId], references: [id])
   itemId    String
+  helpfulVotes   Int @default(0)
+  downvotes      Int @default(0)
+}
+
+model Tag {
+  id        String   @id @default(cuid())
+  value     String
+  items     TagOnItem[]
+}
+
+model TagOnItem {
+  item    Item @relation(fields: [itemId], references: [id])
+  itemId  String
+  tag     Tag @relation(fields: [tagId], references: [id])
+  tagId   String
+  assignedAt DateTime @default(now())
+
+  @@id([itemId, tagId])
 }

@@ -1,4 +1,5 @@
 import prisma from '@/lib/prisma';
+import { transformNameToSlug } from '@/lib/utils-backend';
 import { NextApiHandler } from 'next';
 
 // api request to create an item
@@ -8,6 +9,7 @@ const handle: NextApiHandler = async (req, res) => {
     data: {
       name,
       imageUrl: imageUrl ?? '',
+      slug: transformNameToSlug(name),
     },
   });
   res.json(result);

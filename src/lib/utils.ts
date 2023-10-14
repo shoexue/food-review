@@ -34,4 +34,11 @@ const formatDate = (d: Date) => {
   return `${months[d.getMonth()]} ${d.getDate()}, ${d.getHours()}:${minutes}`;
 };
 
-export { extractSlug, formatDate, cn };
+const getImage = (src: string | undefined) => {
+  if (!src || src === '') {
+    return 'https://static.ezrahuang.com/file/new-res-meal-review/Screenshot 2023-05-28 103355.png';
+  } else {
+    return src;
+  }
+};
+export { extractSlug, formatDate, cn, getImage };
