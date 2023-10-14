@@ -31,6 +31,8 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Toaster } from '@/components/ui/toaster';
+import { Input } from './ui/input';
+import StarRating from './StarRating';
 // import { toast } from "@/components/ui/use-toast"
 
 const FormSchema = z.object({
@@ -40,8 +42,18 @@ const FormSchema = z.object({
       message: 'Review must be at least 10 characters long.',
     })
     .max(160, {
-      message: 'Review must not be longer than 30 characters.',
+      message: 'Review must not be longer than 160 characters.',
     }),
+  title: z
+    .string()
+    .min(1, {
+      message: 'Review title must be at least 1 character long',
+    })
+    .max(30, { message: 'Review title must not be longer than 30 characters' }),
+  score: z
+    .number()
+    .min(0, { message: 'min is 0' })
+    .max(10, { message: 'max is 10' }),
 });
 
 interface IReviewButtonProps {
@@ -50,17 +62,22 @@ interface IReviewButtonProps {
   onFail: VoidFunction;
 }
 
+type IFormData = z.infer<typeof FormSchema>;
+
 const ReviewButton: React.FC<IReviewButtonProps> = ({
   itemId,
   onSuccess,
   onFail,
 }) => {
-  const makeReview = async () => {
+  const makeReview = async (data: IFormData) => {
+    console.log('make review');
     const reviewData = {
-      score: 7 + '', // int out of ten
-      comment: 'test',
+      score: data.score + '',
+      comment: data.review,
       itemId,
+      title: data.title,
     };
+
     try {
       const res = await fetch('/api/review/create', {
         method: 'POST',
@@ -76,11 +93,11 @@ const ReviewButton: React.FC<IReviewButtonProps> = ({
     }
   };
 
-  const form = useForm<z.infer<typeof FormSchema>>({
+  const form = useForm<IFormData>({
     resolver: zodResolver(FormSchema),
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  const onSubmit = (data: z.infer<typeof FormSchema>) => {
     console.log(data);
     toast({
       title: 'You submitted the following values:',
@@ -90,17 +107,14 @@ const ReviewButton: React.FC<IReviewButtonProps> = ({
         </pre>
       ),
     });
-  }
+    makeReview(data);
+  };
 
   return (
     <Dialog>
       <Toaster />
       <DialogTrigger asChild>
-        <Button
-          onClick={() => {
-            makeReview();
-          }}
-        >
+        <Button>
           <PlusIcon className='w-4 h-4 mr-2' /> Review
         </Button>
       </DialogTrigger>
@@ -116,6 +130,23 @@ const ReviewButton: React.FC<IReviewButtonProps> = ({
           <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
             <FormField
               control={form.control}
+              name='title'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Title</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder='Your review title'
+                      className='resize-none'
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name='review'
               render={({ field }) => (
                 <FormItem>
@@ -127,9 +158,21 @@ const ReviewButton: React.FC<IReviewButtonProps> = ({
                       {...field}
                     />
                   </FormControl>
-                  {/* <FormDescription>
-                    You can <span>@mention</span> other users and organizations.
-                  </FormDescription> */}
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='score'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Score</FormLabel>
+                  <StarRating
+                    onStarClick={(stars) => {
+                      form.setValue('score', stars);
+                    }}
+                  ></StarRating>
                   <FormMessage />
                 </FormItem>
               )}

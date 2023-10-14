@@ -27,6 +27,7 @@ model Review {
   id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   rating    Int
+  title     String
   comment   String
   Item      Item     @relation(fields: [itemId], references: [id])
   itemId    String

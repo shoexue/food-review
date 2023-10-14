@@ -61,10 +61,8 @@ export default function Item() {
             <Image src={getImage(item.imageUrl)} fill alt='' />
           </div>
           <ReviewButton
-            itemId={slug}
-            onSuccess={() => {
-              refetch();
-            }}
+            itemId={item.id}
+            onSuccess={refetch}
             onFail={() => {}}
           />
         </>
