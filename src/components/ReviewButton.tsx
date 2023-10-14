@@ -1,5 +1,6 @@
 import { PlusSmallIcon } from '@heroicons/react/24/outline';
 import React from 'react';
+import { Button } from "@/components/ui/button"
 
 interface IReviewButtonProps {
   itemId: string;
@@ -34,16 +35,13 @@ const ReviewButton: React.FC<IReviewButtonProps> = ({
   };
 
   return (
-    <button
+    <Button
       onClick={() => {
         makeReview();
       }}
     >
-      <div className="flex items-center bg-gray-300 rounded-md px-4">
-        <PlusSmallIcon className="w-4" />
-        <span>Review</span>
-      </div>
-    </button>
+      <PlusSmallIcon className="w-2 h-2 mr-2" /> Review
+    </Button>
   );
 };
 

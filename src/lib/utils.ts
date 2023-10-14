@@ -1,3 +1,10 @@
+import { type ClassValue, clsx } from "clsx"
+import { twMerge } from "tailwind-merge"
+
+function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
+
 const extractSlug = (s: string | string[] | undefined) => {
   console.log('extracting slug from ', s);
   if (!s) return '';
@@ -27,4 +34,6 @@ const formatDate = (d: Date) => {
   return `${months[d.getMonth()]} ${d.getDate()}, ${d.getHours()}:${minutes}`;
 };
 
-export { extractSlug, formatDate };
+export { extractSlug, formatDate, cn };
+
+
