@@ -1,8 +1,8 @@
-"use client" //Form needs use client
+'use client'; //Form needs use client
 
 import { PlusIcon } from '@heroicons/react/24/outline';
 import React from 'react';
-import { Button } from "@/components/ui/button"
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -11,16 +11,15 @@ import {
   DialogTitle,
   DialogTrigger,
   DialogFooter,
-} from "@/components/ui/dialog"
-import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label"
+} from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 import { StarIcon as StarOutlineIcon } from '@heroicons/react/24/outline';
-import { toast } from "@/components/ui/use-toast"
+import { toast } from '@/components/ui/use-toast';
 
-
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import * as z from "zod"
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
 
 import {
   Form,
@@ -30,7 +29,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
+} from '@/components/ui/form';
 import { Toaster } from '@/components/ui/toaster';
 // import { toast } from "@/components/ui/use-toast"
 
@@ -38,13 +37,12 @@ const FormSchema = z.object({
   review: z
     .string()
     .min(10, {
-      message: "Review must be at least 10 characters long.",
+      message: 'Review must be at least 10 characters long.',
     })
     .max(160, {
-      message: "Review must not be longer than 30 characters.",
+      message: 'Review must not be longer than 30 characters.',
     }),
-})
-
+});
 
 interface IReviewButtonProps {
   itemId: string;
@@ -80,18 +78,18 @@ const ReviewButton: React.FC<IReviewButtonProps> = ({
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
-  })
+  });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data)
+    console.log(data);
     toast({
-      title: "You submitted the following values:",
+      title: 'You submitted the following values:',
       description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+        <pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
+          <code className='text-white'>{JSON.stringify(data, null, 2)}</code>
         </pre>
       ),
-    })
+    });
   }
 
   return (
@@ -103,29 +101,29 @@ const ReviewButton: React.FC<IReviewButtonProps> = ({
             makeReview();
           }}
         >
-          <PlusIcon className="w-4 h-4 mr-2" /> Review
+          <PlusIcon className='w-4 h-4 mr-2' /> Review
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader>
           <DialogTitle>Add a Review</DialogTitle>
           <DialogDescription>
-            Add a review of the dish. Click submit when you're done.
+            {"Add a review of the dish. Click submit when you're done."}
           </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
             <FormField
               control={form.control}
-              name="review"
+              name='review'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Review</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="What did you think of this dish?"
-                      className="resize-none"
+                      placeholder='What did you think of this dish?'
+                      className='resize-none'
                       {...field}
                     />
                   </FormControl>
@@ -137,13 +135,12 @@ const ReviewButton: React.FC<IReviewButtonProps> = ({
               )}
             />
             <DialogFooter>
-              <Button type="submit">Submit</Button>
+              <Button type='submit'>Submit</Button>
             </DialogFooter>
           </form>
         </Form>
-      </DialogContent >
-    </Dialog >
-
+      </DialogContent>
+    </Dialog>
   );
 };
 

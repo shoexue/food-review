@@ -1,8 +1,8 @@
-import { type ClassValue, clsx } from "clsx"
-import { twMerge } from "tailwind-merge"
+import { type ClassValue, clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 
 function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 const extractSlug = (s: string | string[] | undefined) => {
@@ -35,5 +35,3 @@ const formatDate = (d: Date) => {
 };
 
 export { extractSlug, formatDate, cn };
-
-
