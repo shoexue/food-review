@@ -71,6 +71,18 @@ interface IAddItemModal {
 }
 
 const AddItemModal: React.FC<IAddItemModal> = ({ open, onClose }) => {
+  const reset = () => {
+    form.setValue('score', 0);
+    form.setValue('name', '');
+    form.setValue('review', '');
+    form.setValue('title', '');
+  };
+
+  const onCancel = () => {
+    reset();
+    onClose();
+  };
+
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     toast({
       title: 'You submitted the following values:',
@@ -86,6 +98,7 @@ const AddItemModal: React.FC<IAddItemModal> = ({ open, onClose }) => {
     const item = await getItem(_item.id); // necessary because this will have the correct score
 
     store.addItem(item, [review]);
+    reset();
     onClose();
   };
 
@@ -166,24 +179,14 @@ const AddItemModal: React.FC<IAddItemModal> = ({ open, onClose }) => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Score</FormLabel>
-                  <StarRating
-                    onStarClick={(stars) => {
-                      form.setValue('score', stars);
-                    }}
-                  ></StarRating>
+                  <StarRating />
                   <FormMessage />
                 </FormItem>
               )}
             />
             <DialogFooter>
               <div className='flex justify-between w-full'>
-                <Button
-                  onClick={() => {
-                    onClose();
-                  }}
-                >
-                  Cancel
-                </Button>
+                <Button onClick={() => onCancel()}>Cancel</Button>
                 <Button type='submit'>Submit</Button>
               </div>
             </DialogFooter>
