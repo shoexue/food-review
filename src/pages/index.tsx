@@ -14,25 +14,14 @@ import { Button } from '@/components/ui/button';
 import { StarIcon as StarSolidIcon } from '@heroicons/react/24/solid';
 import { getImage } from '@/lib/utils';
 import Spinner from '@/components/Spinner';
+import AddItemButton from '@/components/AddItemButton';
 
 export default function Home() {
   const { items, refetch, loading } = useItems();
 
-  console.log(items);
+  //can remove this when we make a component for the AddItemButton
 
-  const addItem = async () => {
-    await fetch('/api/item/create', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: new URLSearchParams({
-        name: 'test ' + items.length,
-      }),
-    });
-
-    refetch();
-  };
+  // REMOVE TO HERE
 
   return (
     <div className='flex flex-col items-center gap-y-4 mx-12 md:mx-48'>
@@ -43,14 +32,10 @@ export default function Home() {
         <Spinner />
       ) : (
         <>
-          <Button
-            onClick={() => {
-              addItem();
-            }}
-          >
-            Add Item
-          </Button>
-          <div className='grid w-full grid-colc-1 lg:grid-cols-3 gap-4'>
+          <AddItemButton
+            onSuccess={refetch}
+            onFail={() => { }}
+          />          <div className='grid w-full grid-colc-1 lg:grid-cols-3 gap-4'>
             {items.map((i) => {
               return (
                 <Card key={i.id} className='group-hover:bg-slate-50'>
@@ -91,7 +76,7 @@ export default function Home() {
                     <ReviewButton
                       itemId={i.id}
                       onSuccess={() => refetch()}
-                      onFail={() => {}}
+                      onFail={() => { }}
                     />
                   </CardFooter>
                 </Card>

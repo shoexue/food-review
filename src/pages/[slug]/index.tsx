@@ -66,7 +66,7 @@ export default function Item() {
           <ReviewButton
             itemId={item.id}
             onSuccess={refetch}
-            onFail={() => {}}
+            onFail={() => { }}
           />
         </>
       )}
@@ -83,7 +83,7 @@ export default function Item() {
                   {[...Array(10 - r.rating)].map((s) => {
                     return <StarOutlineIcon key={s} className='w-4 h-4' />;
                   })}
-                  <p className='align-middle'>{r.rating}/10</p>
+                  {/* <p className='align-middle'>{r.rating}/10</p> */}
                 </div>
                 <div>
                   <CardTitle>{r.title}</CardTitle>
