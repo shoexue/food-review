@@ -68,7 +68,7 @@ export default function Home() {
                   })
                   } */}
                         <StarSolidIcon className='w-4 h-4' />
-                        <p className='align-middle'>{i.rating}/10</p>
+                        <p className='align-middle'>{Math.round((i.rating + Number.EPSILON) * 10) / 10}/10</p>
                       </div>
                     </CardHeader>
                   </Link>
