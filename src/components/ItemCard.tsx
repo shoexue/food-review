@@ -48,7 +48,9 @@ const ItemCard: React.FC<IItemCardProps> = observer(({ item }) => {
                   })
                   } */}
             <StarIcon className='w-4 h-4' />
-            <p className='align-middle'>{item.rating}/10</p>
+            <p className='align-middle'>
+              {Math.round((item.rating + Number.EPSILON) * 10) / 10}/10
+            </p>
           </div>
         </CardHeader>
       </Link>

@@ -30,7 +30,6 @@ const months = [
 const formatDate = (d: Date) => {
   const minutes = d.getMinutes() > 9 ? d.getMinutes() : '0' + d.getMinutes();
 
-  // TODO local time not working properly?
   return `${months[d.getMonth()]} ${d.getDate()}, ${d.getHours()}:${minutes}`;
 };
 
