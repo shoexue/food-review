@@ -14,7 +14,7 @@ const StarMeter: React.FC<IStarMeterProps> = ({ stars }) => {
       style={{ width: `${stars * 16}px` }}
     >
       {Array.from(Array(10)).map((v, i) => {
-        return <StarIcon key={v} className='w-4 inline' />;
+        return <StarIcon key={i} className='w-4 inline' />;
       })}
     </div>
   );

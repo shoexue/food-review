@@ -1,6 +1,6 @@
 import { IItem } from '@/lib/types/Item';
 import { getImage } from '@/lib/utils';
-import ReviewButton from './ReviewButton';
+import ReviewModal from './ReviewModal';
 import {
   Card,
   CardContent,
@@ -14,28 +14,34 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { observer } from 'mobx-react-lite';
 import StarMeter from './StarMeter';
+import { Button } from './ui/button';
+import { PlusIcon } from '@heroicons/react/24/solid';
 interface IItemCardProps {
   item: IItem;
+  onReviewClick: (itemId: string) => void;
 }
 
-const ItemCard: React.FC<IItemCardProps> = observer(({ item }) => {
-  return (
-    <Card key={item.id} className='group-hover:bg-slate-50'>
-      <Link href={`/${item.slug}`} className='group' key={item.id}>
-        <CardContent className='bg-slate-100 flex items-center justify-center h-64'>
-          <div className='relative w-full h-full'>
-            <Image src={getImage(item.imageUrl)} fill alt='' />
-          </div>
-        </CardContent>
-        <CardHeader className='flex flex-row justify-between'>
-          <div>
-            <CardTitle className='group-hover:underline'>{item.name}</CardTitle>
-            <CardDescription>
-              {`${item.reviews.reviews.length} total reviews`}
-            </CardDescription>
-          </div>
-          <div className='flex flex-row items-center'>
-            {/* {[...Array(r.score)].map((s) => {
+const ItemCard: React.FC<IItemCardProps> = observer(
+  ({ item, onReviewClick }) => {
+    return (
+      <Card key={item.id} className='group-hover:bg-slate-50'>
+        <Link href={`/${item.slug}`} className='group' key={item.id}>
+          <CardContent className='bg-slate-100 flex items-center justify-center h-64'>
+            <div className='relative w-full h-full'>
+              <Image src={getImage(item.imageUrl)} fill alt='' />
+            </div>
+          </CardContent>
+          <CardHeader className='flex flex-row justify-between'>
+            <div>
+              <CardTitle className='group-hover:underline'>
+                {item.name}
+              </CardTitle>
+              <CardDescription>
+                {`${item.reviews.reviews.length} total reviews`}
+              </CardDescription>
+            </div>
+            <div className='flex flex-row items-center'>
+              {/* {[...Array(r.score)].map((s) => {
                     return (
                       <StarSolidIcon key={s} className="w-4 h-4" />
                     );
@@ -47,25 +53,28 @@ const ItemCard: React.FC<IItemCardProps> = observer(({ item }) => {
                     );
                   })
                   } */}
-            {/* <StarIcon className='w-4 h-4' /> */}
-            {/* <p className='align-middle'>
+              {/* <StarIcon className='w-4 h-4' /> */}
+              {/* <p className='align-middle'>
               {Math.round((item.rating + Number.EPSILON) * 10) / 10}/10
             </p> */}
-          </div>
-        </CardHeader>
-      </Link>
+            </div>
+          </CardHeader>
+        </Link>
 
-      <CardContent className='mx-6 pb-2'>
-        <StarMeter stars={item.rating} />
-        <p className='inline'>
-          {Math.round((item.rating + Number.EPSILON) * 10) / 10}/10
-        </p>
-      </CardContent>
-      <CardFooter>
-        <ReviewButton itemId={item.id} />
-      </CardFooter>
-    </Card>
-  );
-});
+        <CardContent className='mx-6 pb-2'>
+          <StarMeter stars={item.rating} />
+          <p className='inline'>
+            {Math.round((item.rating + Number.EPSILON) * 10) / 10}/10
+          </p>
+        </CardContent>
+        <CardFooter>
+          <Button onClick={() => onReviewClick(item.id)}>
+            <PlusIcon className='w-4 h-4 mr-2' /> Review
+          </Button>
+        </CardFooter>
+      </Card>
+    );
+  }
+);
 
 export default ItemCard;

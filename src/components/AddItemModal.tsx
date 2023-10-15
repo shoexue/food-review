@@ -1,6 +1,5 @@
 'use client';
 
-import { PlusIcon } from '@heroicons/react/24/outline';
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -9,12 +8,9 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogFooter,
 } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { StarIcon as StarOutlineIcon } from '@heroicons/react/24/outline';
 import { toast } from '@/components/ui/use-toast';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -24,7 +20,6 @@ import * as z from 'zod';
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -70,7 +65,12 @@ const FormSchema = z.object({
 
 type IFormData = z.infer<typeof FormSchema>;
 
-const AddItemButton: React.FC<{}> = () => {
+interface IAddItemModal {
+  open: boolean;
+  onClose: VoidFunction;
+}
+
+const AddItemModal: React.FC<IAddItemModal> = ({ open, onClose }) => {
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     toast({
       title: 'You submitted the following values:',
@@ -86,6 +86,7 @@ const AddItemButton: React.FC<{}> = () => {
     const item = await getItem(_item.id); // necessary because this will have the correct score
 
     store.addItem(item, [review]);
+    onClose();
   };
 
   const form = useForm<IFormData>({
@@ -93,13 +94,8 @@ const AddItemButton: React.FC<{}> = () => {
   });
 
   return (
-    <Dialog>
+    <Dialog open={open} modal>
       <Toaster />
-      <DialogTrigger asChild>
-        <Button>
-          <PlusIcon className='w-4 h-4 mr-2' /> Item
-        </Button>
-      </DialogTrigger>
       <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader>
           <DialogTitle>Add a Food Item</DialogTitle>
@@ -189,4 +185,4 @@ const AddItemButton: React.FC<{}> = () => {
   );
 };
 
-export default AddItemButton;
+export default AddItemModal;

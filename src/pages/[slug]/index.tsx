@@ -1,6 +1,6 @@
 'use client';
 
-import ReviewButton from '@/components/ReviewButton';
+import AddReviewModal from '@/components/ReviewModal';
 import { extractSlug, formatDate, getImage } from '@/lib/utils';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
@@ -24,6 +24,7 @@ import { IItem } from '@/lib/types/Item';
 import { store } from '@/lib/types';
 import Spinner from '@/components/Spinner';
 import ReviewCard from '@/components/ReviewCard';
+import { PlusIcon } from '@heroicons/react/24/solid';
 
 const Item = observer(() => {
   const route = useRouter();
@@ -38,6 +39,8 @@ const Item = observer(() => {
       setItem(i);
     }
   }
+
+  const [reviewModalOpen, setReviewModalOpen] = useState(false);
 
   return (
     <div className='flex flex-col items-center gap-y-4 mx-12'>
@@ -57,7 +60,9 @@ const Item = observer(() => {
             height={300}
             alt=''
           />
-          <ReviewButton itemId={item?.id ?? ''} />
+          <Button onClick={() => setReviewModalOpen(true)}>
+            <PlusIcon className='w-4 h-4 mr-2' /> Review
+          </Button>
           {/* COULD REMOVE THE REVIEW BUTTON AND JUST ADD THE FORM HERE */}
           <div className='grid grid-cols-1 gap-4 w-full max-w-2xl'>
             {item?.reviews.getItems().map((r) => (
@@ -68,6 +73,11 @@ const Item = observer(() => {
       ) : (
         <Spinner />
       )}
+      <AddReviewModal
+        itemId={item?.id ?? ''}
+        open={reviewModalOpen}
+        onClose={() => setReviewModalOpen(false)}
+      />
     </div>
   );
 });

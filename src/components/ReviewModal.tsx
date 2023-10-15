@@ -1,6 +1,5 @@
 'use client'; //Form needs use client
 
-import { PlusIcon } from '@heroicons/react/24/outline';
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -9,7 +8,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogFooter,
 } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
@@ -30,8 +28,8 @@ import {
 import { Toaster } from '@/components/ui/toaster';
 import { Input } from './ui/input';
 import StarRating from './StarRating';
-import { applySnapshot, getSnapshot } from 'mobx-state-tree';
 import { store } from '@/lib/types';
+import { makeReview } from '@/lib/review/make-review';
 // import { toast } from "@/components/ui/use-toast"
 
 const FormSchema = z.object({
@@ -57,41 +55,17 @@ const FormSchema = z.object({
 
 interface IReviewButtonProps {
   itemId: string;
+  open: boolean;
+  onClose: VoidFunction;
 }
 
 type IFormData = z.infer<typeof FormSchema>;
 
-const ReviewButton: React.FC<IReviewButtonProps> = ({ itemId }) => {
-  const makeReview = async (data: IFormData) => {
-    const item = store.findItemById(itemId);
-    if (item) {
-      const snapshot = getSnapshot(item);
-
-      const reviewData = {
-        score: data.score + '',
-        comment: data.review,
-        itemId,
-        title: data.title,
-      };
-
-      await fetch('/api/review/create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: new URLSearchParams(reviewData).toString(),
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          item.addReview(data);
-        })
-        .catch((e) => {
-          console.error(e);
-          applySnapshot(item, snapshot);
-        });
-    }
-  };
-
+const ReviewModal: React.FC<IReviewButtonProps> = ({
+  itemId,
+  open,
+  onClose,
+}) => {
   const form = useForm<IFormData>({
     resolver: zodResolver(FormSchema),
   });
@@ -105,17 +79,21 @@ const ReviewButton: React.FC<IReviewButtonProps> = ({ itemId }) => {
         </pre>
       ),
     });
-    makeReview(data);
+    makeReview({ ...data, itemId })
+      .then((review) => {
+        const item = store.findItemById(itemId);
+        if (item) {
+          item.addReview(review);
+        }
+      })
+      .then(() => {
+        onClose();
+      });
   };
 
   return (
-    <Dialog>
+    <Dialog open={open}>
       <Toaster />
-      <DialogTrigger asChild>
-        <Button>
-          <PlusIcon className='w-4 h-4 mr-2' /> Review
-        </Button>
-      </DialogTrigger>
       <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader>
           <DialogTitle>Add a Review</DialogTitle>
@@ -185,4 +163,4 @@ const ReviewButton: React.FC<IReviewButtonProps> = ({ itemId }) => {
   );
 };
 
-export default ReviewButton;
+export default ReviewModal;
