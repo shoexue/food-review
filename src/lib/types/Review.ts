@@ -1,4 +1,4 @@
-import { types } from 'mobx-state-tree';
+import { Instance, types } from 'mobx-state-tree';
 import { Review as PrismaReview } from '@prisma/client';
 
 const Review = types
@@ -51,4 +51,6 @@ const ReviewArray = types
     },
   }));
 
+type IReview = Instance<typeof Review>;
 export { Review, ReviewArray };
+export type { IReview };

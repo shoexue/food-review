@@ -16,15 +16,14 @@ import {
   StarIcon as StarOutlineIcon,
   ArrowLeftIcon,
 } from '@heroicons/react/24/outline';
-import { StarIcon as StarSolidIcon } from '@heroicons/react/24/solid';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { observer } from 'mobx-react-lite';
-import { getSnapshot } from 'mobx-state-tree';
 import { useMemo, useState } from 'react';
 import { IItem } from '@/lib/types/Item';
 import { store } from '@/lib/types';
 import Spinner from '@/components/Spinner';
+import ReviewCard from '@/components/ReviewCard';
 
 const Item = observer(() => {
   const route = useRouter();
@@ -39,25 +38,6 @@ const Item = observer(() => {
       setItem(i);
     }
   }
-
-  const voteHelpful = (reviewId: string) => {
-    if (!item) return;
-
-    fetch('/api/helpful', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams({ reviewId }).toString(),
-    })
-      .then(() => {
-        store
-          .findItemById(item.id)
-          ?.reviews.findReviewById(reviewId)
-          ?.addHelpful();
-      })
-      .catch((e) => {
-        console.error(e);
-      });
-  };
 
   return (
     <div className='flex flex-col items-center gap-y-4 mx-12'>
@@ -80,37 +60,9 @@ const Item = observer(() => {
           <ReviewButton itemId={item?.id ?? ''} />
           {/* COULD REMOVE THE REVIEW BUTTON AND JUST ADD THE FORM HERE */}
           <div className='grid grid-cols-1 gap-4 w-full max-w-2xl'>
-            {item?.reviews.getItems().map((r) => {
-              return (
-                <Card key={r.id} className=''>
-                  <CardHeader>
-                    <div className='flex flex-row items-center'>
-                      {[...Array(r.rating)].map((s, i) => {
-                        return <StarSolidIcon key={i} className='w-4 h-4' />;
-                      })}
-                      {[...Array(10 - r.rating)].map((s, i) => {
-                        return <StarOutlineIcon key={i} className='w-4 h-4' />;
-                      })}
-                      <p className='align-middle'>{r.rating}/10</p>
-                    </div>
-                    <div>
-                      <CardTitle>{r.title}</CardTitle>
-                      <CardDescription>
-                        {formatDate(new Date(r.createdAt))}
-                      </CardDescription>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <p className='ml-6 my-2'>{r.comment}</p>
-                  </CardContent>
-                  <CardFooter>
-                    <Button onClick={() => voteHelpful(r.id)}>
-                      {`${r.helpfulVotes} people found this review helpful.`}
-                    </Button>
-                  </CardFooter>
-                </Card>
-              );
-            })}
+            {item?.reviews.getItems().map((r) => (
+              <ReviewCard review={r} key={r.id} item={item} />
+            ))}
           </div>
         </>
       ) : (
