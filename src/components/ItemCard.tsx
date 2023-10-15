@@ -10,10 +10,10 @@ import {
   CardFooter,
 } from './ui/card';
 import Image from 'next/image';
-import { StarIcon } from '@heroicons/react/24/solid';
 
 import Link from 'next/link';
 import { observer } from 'mobx-react-lite';
+import StarMeter from './StarMeter';
 interface IItemCardProps {
   item: IItem;
 }
@@ -47,13 +47,20 @@ const ItemCard: React.FC<IItemCardProps> = observer(({ item }) => {
                     );
                   })
                   } */}
-            <StarIcon className='w-4 h-4' />
-            <p className='align-middle'>
+            {/* <StarIcon className='w-4 h-4' /> */}
+            {/* <p className='align-middle'>
               {Math.round((item.rating + Number.EPSILON) * 10) / 10}/10
-            </p>
+            </p> */}
           </div>
         </CardHeader>
       </Link>
+
+      <CardContent className='mx-6 pb-2'>
+        <StarMeter stars={item.rating} />
+        <p className='inline'>
+          {Math.round((item.rating + Number.EPSILON) * 10) / 10}/10
+        </p>
+      </CardContent>
       <CardFooter>
         <ReviewButton itemId={item.id} />
       </CardFooter>
