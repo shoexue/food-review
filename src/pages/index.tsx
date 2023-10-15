@@ -51,9 +51,7 @@ const Home = observer(() => {
       />
       <ReviewModal
         open={reviewModalOpen}
-        onClose={() => {
-          setReviewModalOpen(false);
-        }}
+        onClose={() => setReviewModalOpen(false)}
         itemId={reviewItemId}
       />
     </div>

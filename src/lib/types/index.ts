@@ -1,13 +1,13 @@
 import { Instance, SnapshotIn, SnapshotOut, types } from 'mobx-state-tree';
 import { Review, ReviewArray } from './Review';
 import { Item } from './Item';
-import { Tag, TagArray } from './Tag';
+import { Tag, TagMap, TagArray } from './Tag';
 import { Item as PrismItem, Review as PrismaReview } from '@prisma/client';
 
 const RootStore = types
   .model('Root Store', {
     items: types.array(Item),
-    tags: types.map(Tag),
+    tags: TagMap,
   })
   .actions((self) => ({
     ready() {
