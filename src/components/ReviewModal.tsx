@@ -154,7 +154,16 @@ const ReviewModal: React.FC<IReviewButtonProps> = ({
               )}
             />
             <DialogFooter>
-              <Button type='submit'>Submit</Button>
+              <div className='flex justify-between w-full'>
+                <Button
+                  onClick={() => {
+                    onClose();
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button type='submit'>Submit</Button>
+              </div>
             </DialogFooter>
           </form>
         </Form>
