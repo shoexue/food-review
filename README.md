@@ -88,16 +88,15 @@ Then run
 pnpm i
 npx prisma db push
 npx prisma generate
+npx prisma db seed
 ```
 
 You can run `npx prisma studio` to visualize data in the databases;
+Run `npx prisma db seed` to seed the database with tags
 
 Planned features (in decreasing order of importance):
 
-- categories of breakfast/lunch/dinner
 - image support
 - item search
-- add review was helpful or not helpful
-- flags for vegetarian, vegan, halal
 - email notifications for specific meals
 - multiple dining hall support
