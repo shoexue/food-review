@@ -66,6 +66,7 @@ const ReviewModal: React.FC<IReviewButtonProps> = ({
   open,
   onClose,
 }) => {
+
   const form = useForm<IFormData>({
     resolver: zodResolver(FormSchema),
   });
@@ -79,6 +80,13 @@ const ReviewModal: React.FC<IReviewButtonProps> = ({
         </pre>
       ),
     });
+
+    form.setValue('review', '');
+    form.setValue('title', '');
+    form.setValue('score', NaN);
+    // form.reset(data);
+
+
     makeReview({ ...data, itemId })
       .then((review) => {
         const item = store.findItemById(itemId);

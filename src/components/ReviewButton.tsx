@@ -1,13 +1,16 @@
-'use client';
+'use client'; //Form needs use client
 
+import { PlusIcon } from '@heroicons/react/24/outline';
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
   DialogFooter,
 } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
@@ -26,23 +29,13 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Toaster } from '@/components/ui/toaster';
-import { Input } from '@/components/ui/input';
-import StarRating from '@/components/StarRating';
+import { Input } from './ui/input';
+import StarRating from './StarRating';
+import { applySnapshot, getSnapshot } from 'mobx-state-tree';
 import { store } from '@/lib/types';
-import { makeItem } from '@/lib/review/make-item';
-import { makeReview } from '@/lib/review/make-review';
-import { getItem } from '@/lib/review/get-item';
 // import { toast } from "@/components/ui/use-toast"
 
 const FormSchema = z.object({
-  name: z
-    .string()
-    .min(2, {
-      message: 'Dish name must be at least 2 characters long.',
-    })
-    .max(20, {
-      message: 'Dish name must not be longer than 20 characters.',
-    }),
   review: z
     .string()
     .min(10, {
@@ -63,20 +56,48 @@ const FormSchema = z.object({
     .max(10, { message: 'max is 10' }),
 });
 
-type IFormData = z.infer<typeof FormSchema>;
-
-interface IAddItemModal {
-  open: boolean;
-  onClose: VoidFunction;
+interface IReviewButtonProps {
+  itemId: string;
 }
 
-const AddItemModal: React.FC<IAddItemModal> = ({ open, onClose }) => {
+type IFormData = z.infer<typeof FormSchema>;
+
+const ReviewButton: React.FC<IReviewButtonProps> = ({ itemId }) => {
+  const makeReview = async (data: IFormData) => {
+    const item = store.findItemById(itemId);
+    if (item) {
+      const snapshot = getSnapshot(item);
+
+      const reviewData = {
+        score: data.score + '',
+        comment: data.review,
+        itemId,
+        title: data.title,
+      };
+
+      await fetch('/api/review/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams(reviewData).toString(),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          item.addReview(data);
+        })
+        .catch((e) => {
+          console.error(e);
+          applySnapshot(item, snapshot);
+        });
+    }
+  };
 
   const form = useForm<IFormData>({
     resolver: zodResolver(FormSchema),
   });
 
-  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+  const onSubmit = (data: z.infer<typeof FormSchema>) => {
     toast({
       title: 'You submitted the following values:',
       description: (
@@ -85,54 +106,31 @@ const AddItemModal: React.FC<IAddItemModal> = ({ open, onClose }) => {
         </pre>
       ),
     });
-
-    const _item = await makeItem(data);
-    const review = await makeReview({ ...data, itemId: _item.id });
-    const item = await getItem(_item.id); // necessary because this will have the correct score
-
-    form.setValue("name", '');
-    form.setValue('review', '');
-    form.setValue('title', '');
-    form.setValue('score', NaN);
-    // form.reset(data);
-
-    store.addItem(item, [review]);
-    onClose();
+    makeReview(data);
+    // form.setValue('review', '');
+    // form.setValue('score', NaN);
+    // form.setValue('title', '');
+    form.reset();
   };
 
   return (
-    <Dialog open={open} modal>
+    <Dialog>
       <Toaster />
+      <DialogTrigger asChild>
+        <Button>
+          <PlusIcon className='w-4 h-4 mr-2' /> Review
+        </Button>
+      </DialogTrigger>
       <DialogContent className='sm:max-w-[425px]'>
         <DialogHeader>
-          <DialogTitle>Add a Food Item</DialogTitle>
+          <DialogTitle>Add a Review</DialogTitle>
           <DialogDescription>
-            {
-              "Add a food item that doesn't have any reviews yet. Click submit when you're done."
-            }
+            {"Add a review of the dish. Click submit when you're done."}
           </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
-            <FormField
-              control={form.control}
-              name='name'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Dish Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder='The dishes name'
-                      className='resize-none'
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
             <FormField
               control={form.control}
               name='title'
@@ -155,7 +153,7 @@ const AddItemModal: React.FC<IAddItemModal> = ({ open, onClose }) => {
               name='review'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Item Details</FormLabel>
+                  <FormLabel>Review</FormLabel>
                   <FormControl>
                     <Textarea
                       placeholder='What did you think of this dish?'
@@ -183,16 +181,9 @@ const AddItemModal: React.FC<IAddItemModal> = ({ open, onClose }) => {
               )}
             />
             <DialogFooter>
-              <div className='flex justify-between w-full'>
-                <Button
-                  onClick={() => {
-                    onClose();
-                  }}
-                >
-                  Cancel
-                </Button>
-                <Button type='submit'>Submit</Button>
-              </div>
+              {/* <DialogClose asChild> */}
+              <Button type='submit'>Submit</Button>
+              {/* </DialogClose> */}
             </DialogFooter>
           </form>
         </Form>
@@ -201,4 +192,4 @@ const AddItemModal: React.FC<IAddItemModal> = ({ open, onClose }) => {
   );
 };
 
-export default AddItemModal;
+export default ReviewButton;
