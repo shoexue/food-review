@@ -71,6 +71,11 @@ interface IAddItemModal {
 }
 
 const AddItemModal: React.FC<IAddItemModal> = ({ open, onClose }) => {
+
+  const form = useForm<IFormData>({
+    resolver: zodResolver(FormSchema),
+  });
+
   const reset = () => {
     form.setValue('score', 0);
     form.setValue('name', '');
@@ -101,10 +106,6 @@ const AddItemModal: React.FC<IAddItemModal> = ({ open, onClose }) => {
     reset();
     onClose();
   };
-
-  const form = useForm<IFormData>({
-    resolver: zodResolver(FormSchema),
-  });
 
   return (
     <Dialog open={open} modal>

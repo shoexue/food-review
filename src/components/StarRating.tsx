@@ -20,7 +20,7 @@ const StarRating: React.FC<StarRatingProps> = ({ max = 10 }) => {
 
   const rating = formContext.watch().score;
 
-  useEffect(() => {}, [rating]);
+  useEffect(() => { }, [rating]);
 
   return (
     <div className='flex space-x-1 items-center'>
