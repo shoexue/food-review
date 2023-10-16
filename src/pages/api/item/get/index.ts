@@ -6,12 +6,20 @@ import { Prisma } from '@prisma/client';
 const GET: NextApiHandler = async (req, res) => {
   const slug = req.query['slug'];
   const itemId = req.query['itemId'];
-  const includeParams: Prisma.ItemFindFirstArgs = {
+  const showUnverified = req.query['showUnverified'];
+
+  const params: Prisma.ItemFindFirstArgs = {
     include: {
       tags: { include: { tag: true } },
       _count: { select: { reviews: true } },
     },
   };
+
+  const whereParams: Prisma.Args<typeof prisma.item, 'findFirst'>['where'] = {};
+
+  if (showUnverified !== undefined) {
+    whereParams.verified = showUnverified === 'true' ? undefined : true;
+  }
 
   let result;
 
@@ -20,21 +28,22 @@ const GET: NextApiHandler = async (req, res) => {
       result = {};
     } else {
       result = await prisma.item.findFirst({
-        where: { id: itemId },
-        ...includeParams,
+        where: { ...whereParams, id: itemId },
+        ...params,
       });
     }
   } else if (slug) {
     if (typeof slug !== 'string') {
     } else {
       result = await prisma.item.findFirst({
-        where: { slug },
-        ...includeParams,
+        where: { ...whereParams, slug },
+        ...params,
       });
     }
   } else {
     result = await prisma.item.findMany({
-      ...includeParams,
+      ...params,
+      where: whereParams,
     });
   }
 

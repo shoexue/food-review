@@ -3,15 +3,18 @@ import { Review, ReviewArray } from './Review';
 import { Item } from './Item';
 import { Tag, TagMap, TagArray } from './Tag';
 import { Item as PrismItem, Review as PrismaReview } from '@prisma/client';
+import { Settings } from './Settings';
 
 const RootStore = types
   .model('Root Store', {
+    itemsInitialized: false,
     items: types.array(Item),
     tags: TagMap,
+    settings: Settings,
   })
   .actions((self) => ({
-    ready() {
-      return !!self.items.length;
+    setItemsInitialized() {
+      self.itemsInitialized = true;
     },
     setItems(items: PrismItem[], reviews: PrismaReview[][]) {
       const x = items
@@ -33,6 +36,7 @@ const RootStore = types
       self.items.replace(x);
     },
     init(items: PrismItem[]) {
+      self.itemsInitialized = false;
       console.log('initialize store with %o', items);
       const promises = items.map((item) => {
         const queryParams = new URLSearchParams({
@@ -54,6 +58,7 @@ const RootStore = types
         })
         .finally(() => {
           console.log('done init');
+          this.setItemsInitialized();
         });
     },
     findItemBySlug(slug: string) {
@@ -86,7 +91,12 @@ export type IStoreSnapshotIn = SnapshotIn<typeof RootStore>;
 export type IStoreSnapshotOut = SnapshotOut<typeof RootStore>;
 
 const store = RootStore.create({
+  itemsInitialized: false,
   items: [],
   tags: {},
+  settings: {
+    showUnverified: true,
+  },
 });
+
 export { RootStore, Review, Item, Tag, store };

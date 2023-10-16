@@ -1,7 +1,11 @@
 import { Item } from '@prisma/client';
 import { useEffect, useState } from 'react';
 
-const useItems = () => {
+interface UseItemsParams {
+  showUnverified: 'true' | 'false';
+}
+
+const useItems = (params: UseItemsParams) => {
   const [loading, setLoading] = useState(false);
   const [items, setItems] = useState<Item[]>([]);
   const [error, setError] = useState('');
@@ -10,7 +14,11 @@ const useItems = () => {
     setLoading(true);
     setError('');
 
-    fetch('/api/item/get', {
+    const queryParams = new URLSearchParams({
+      showUnverified: params.showUnverified,
+    });
+
+    fetch(`/api/item/get?${queryParams}`, {
       method: 'GET',
     })
       .then((res) => res.json())
@@ -26,7 +34,7 @@ const useItems = () => {
       });
   };
 
-  useEffect(refetch, []);
+  useEffect(refetch, [params.showUnverified]);
 
   return { loading, items, error, refetch };
 };

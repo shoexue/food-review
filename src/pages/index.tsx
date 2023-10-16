@@ -9,9 +9,10 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import ReviewModal from '@/components/ReviewModal';
+import { Input } from '@/components/ui/input';
 
 const Home = observer(() => {
-  const { items } = store;
+  const { items, settings, itemsInitialized } = store;
 
   const [addItemModalOpen, setAddItemModalOpen] = useState(false);
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
@@ -22,12 +23,21 @@ const Home = observer(() => {
     setReviewModalOpen(true);
   };
 
+  console.log('items initialized? ', itemsInitialized);
   return (
     <div className='flex flex-col items-center gap-y-4 mx-12 md:mx-48'>
       <h1 className='scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center'>
         {"New Rez's Dishes"}
       </h1>
-      {items.length === 0 ? (
+      <div className='flex'>
+        <p>Show unverified?</p>
+        <Input
+          type='checkbox'
+          checked={settings.showUnverified}
+          onChange={(e) => settings.toggleShowUnverified()}
+        />
+      </div>
+      {!itemsInitialized ? (
         <Spinner />
       ) : (
         <>

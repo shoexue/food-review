@@ -5,10 +5,14 @@ import { getSnapshot } from 'mobx-state-tree';
 import React, { useEffect } from 'react';
 import { store } from '@/lib/types';
 import useItems from '@/hooks/useItems';
+import { observer } from 'mobx-react-lite';
 
-export default function App({ Component, pageProps }: AppProps) {
+const App = observer(({ Component, pageProps }: AppProps) => {
   const { tags } = useTags();
-  const { items } = useItems();
+  const { settings } = store;
+  const { items } = useItems({
+    showUnverified: settings.showUnverified ? 'true' : 'false',
+  });
 
   useEffect(() => {
     store.init(items);
@@ -22,4 +26,6 @@ export default function App({ Component, pageProps }: AppProps) {
   console.log('store', getSnapshot(store));
 
   return <Component {...pageProps} />;
-}
+});
+
+export default App;

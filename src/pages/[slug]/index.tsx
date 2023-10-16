@@ -31,9 +31,9 @@ const Item = observer(() => {
   const slug = useMemo(() => extractSlug(route.query.slug), [route.query.slug]);
   const [item, setItem] = useState<IItem>();
 
-  const { items } = store;
+  const { itemsInitialized } = store;
 
-  if (items.length !== 0 && item === undefined) {
+  if (itemsInitialized && item === undefined) {
     const i = store.findItemBySlug(slug);
     if (i) {
       setItem(i);
