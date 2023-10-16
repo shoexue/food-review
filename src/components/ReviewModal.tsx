@@ -72,8 +72,7 @@ const ReviewModal: React.FC<IReviewButtonProps> = ({
   });
 
   const reset = () => {
-    form.setValue('score', 0);
-    form.setValue('score', 0);
+    form.setValue('score', NaN);
     form.setValue('review', '');
     form.setValue('title', '');
   };
@@ -87,12 +86,6 @@ const ReviewModal: React.FC<IReviewButtonProps> = ({
         </pre>
       ),
     });
-
-    form.setValue('review', '');
-    form.setValue('title', '');
-    form.setValue('score', NaN);
-    // form.reset(data);
-
 
     makeReview({ ...data, itemId })
       .then((review) => {

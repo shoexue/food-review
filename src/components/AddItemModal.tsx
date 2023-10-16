@@ -71,6 +71,11 @@ interface IAddItemModal {
 }
 
 const AddItemModal: React.FC<IAddItemModal> = ({ open, onClose }) => {
+
+  const form = useForm<IFormData>({
+    resolver: zodResolver(FormSchema),
+  });
+
   const reset = () => {
     form.setValue('score', 0);
     form.setValue('name', '');
@@ -96,12 +101,6 @@ const AddItemModal: React.FC<IAddItemModal> = ({ open, onClose }) => {
     const _item = await makeItem(data);
     const review = await makeReview({ ...data, itemId: _item.id });
     const item = await getItem(_item.id); // necessary because this will have the correct score
-
-    form.setValue("name", '');
-    form.setValue('review', '');
-    form.setValue('title', '');
-    form.setValue('score', NaN);
-    // form.reset(data);
 
     store.addItem(item, [review]);
     reset();
