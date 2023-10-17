@@ -2,7 +2,6 @@ import { Instance, SnapshotIn, SnapshotOut, types } from 'mobx-state-tree';
 import { Review, ReviewArray } from './Review';
 import { Item } from './Item';
 import { Tag, TagMap } from './Tag';
-import { Item as PrismItem, Review as PrismaReview } from '@prisma/client';
 import { Settings } from './Settings';
 import { DiningHallMap } from './DiningHall';
 import { UseItemsItem } from '@/hooks/useItems';
