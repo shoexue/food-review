@@ -1,13 +1,9 @@
 import { types } from 'mobx-state-tree';
-import { Tag as PrismaTag } from '@prisma/client';
+import { Tag as PrismaTag, TagOnItem as TOI } from '@prisma/client';
 
 const Tag = types.model('Tag', {
   id: '',
   value: '',
-});
-
-const TagArray = types.model('TagArray', {
-  tags: types.array(Tag),
 });
 
 const TagMap = types
@@ -22,4 +18,4 @@ const TagMap = types
     },
   }));
 
-export { Tag, TagMap, TagArray };
+export { Tag, TagMap };

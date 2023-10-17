@@ -1,7 +1,7 @@
 import { Instance, types } from 'mobx-state-tree';
 import { ReviewArray } from './Review';
-import { TagArray } from './Tag';
 import { Item, Review as PrismaReview } from '@prisma/client';
+import { DiningHall } from './DiningHall';
 
 const Item = types
   .model('Item', {
@@ -13,7 +13,8 @@ const Item = types
     rating: 0.0,
     imageUrl: '',
     reviews: ReviewArray,
-    tags: TagArray,
+    tags: types.array(types.string),
+    diningHall: '',
   })
   .actions((self) => ({
     addReview(review: PrismaReview) {

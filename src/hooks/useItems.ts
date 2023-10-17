@@ -1,13 +1,19 @@
-import { Item } from '@prisma/client';
+import { Item, Review, Tag } from '@prisma/client';
 import { useEffect, useState } from 'react';
 
 interface UseItemsParams {
   showUnverified: 'true' | 'false';
 }
 
+export interface UseItemsItem extends Item {
+  reviews: Review[];
+  tags: Tag[];
+  diningHallId: string;
+}
+
 const useItems = (params: UseItemsParams) => {
   const [loading, setLoading] = useState(false);
-  const [items, setItems] = useState<Item[]>([]);
+  const [items, setItems] = useState<UseItemsItem[]>([]);
   const [error, setError] = useState('');
 
   const refetch = () => {

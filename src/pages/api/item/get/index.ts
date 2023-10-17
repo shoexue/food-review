@@ -10,8 +10,10 @@ const GET: NextApiHandler = async (req, res) => {
 
   const params: Prisma.ItemFindFirstArgs = {
     include: {
-      tags: { include: { tag: true } },
+      tags: true,
       _count: { select: { reviews: true } },
+      diningHall: true,
+      reviews: true,
     },
   };
 

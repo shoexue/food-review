@@ -13,24 +13,21 @@ const handle: NextApiHandler = async (req, res) => {
     },
   });
 
-  const item = await prisma.item.findUnique({ where: { id: itemId } });
+  const item = await prisma.item.findUnique({
+    where: { id: itemId },
+    include: { _count: { select: { reviews: true } } },
+  });
 
   if (item == null) {
     return res.json({});
   }
 
-  const newRating =
-    (item.totalReviews * item.rating + parseInt(score)) /
-    (item.totalReviews + 1);
+  const count = item._count.reviews - 1;
+  const newRating = (count * item.rating + parseInt(score)) / (count + 1);
 
   await prisma.item.update({
-    where: {
-      id: itemId,
-    },
-    data: {
-      rating: newRating,
-      totalReviews: item.totalReviews + 1,
-    },
+    where: { id: itemId },
+    data: { rating: newRating },
   });
 
   res.json(result);

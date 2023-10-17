@@ -32,6 +32,7 @@ import { store } from '@/lib/types';
 import { makeItem } from '@/lib/review/make-item';
 import { makeReview } from '@/lib/review/make-review';
 import { getItem } from '@/lib/review/get-item';
+import DiningHallSelect from './DiningHallSelect';
 // import { toast } from "@/components/ui/use-toast"
 
 const FormSchema = z.object({
@@ -61,6 +62,7 @@ const FormSchema = z.object({
     .number()
     .min(0, { message: 'min is 0' })
     .max(10, { message: 'max is 10' }),
+  diningHall: z.string(),
 });
 
 type IFormData = z.infer<typeof FormSchema>;
@@ -71,7 +73,6 @@ interface IAddItemModal {
 }
 
 const AddItemModal: React.FC<IAddItemModal> = ({ open, onClose }) => {
-
   const form = useForm<IFormData>({
     resolver: zodResolver(FormSchema),
   });
@@ -81,6 +82,7 @@ const AddItemModal: React.FC<IAddItemModal> = ({ open, onClose }) => {
     form.setValue('name', '');
     form.setValue('review', '');
     form.setValue('title', '');
+    form.setValue('diningHall', '');
   };
 
   const onCancel = () => {
@@ -139,6 +141,8 @@ const AddItemModal: React.FC<IAddItemModal> = ({ open, onClose }) => {
                 </FormItem>
               )}
             />
+
+            <DiningHallSelect />
 
             <FormField
               control={form.control}

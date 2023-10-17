@@ -14,7 +14,6 @@ model Item {
   id           String      @id @default(cuid())
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt()
-  totalReviews Int         @default(0)
   name         String
   rating       Float       @default(0)
   imageUrl     String
@@ -22,6 +21,8 @@ model Item {
   tags         TagOnItem[]
   slug         String      @unique
   verified     Boolean     @default(false)
+  diningHall   DiningHall  @relation(fields: [diningHallId], references: [id])
+  diningHallId String
 }
 
 model Review {
@@ -50,4 +51,10 @@ model TagOnItem {
   assignedAt DateTime @default(now())
 
   @@id([itemId, tagId])
+}
+
+model DiningHall {
+  id   String @id @default(cuid())
+  name String
+  Item Item[]
 }

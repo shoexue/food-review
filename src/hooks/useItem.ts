@@ -9,11 +9,12 @@ const emptyItem: Item = {
   id: '',
   createdAt: new Date(),
   updatedAt: new Date(),
-  totalReviews: 0,
   name: '',
   rating: 0,
   imageUrl: '',
   slug: '',
+  verified: false,
+  diningHallId: '',
 };
 
 const useItem = (params: UseItemParams) => {

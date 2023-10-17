@@ -5,11 +5,12 @@ import { Prisma } from '@prisma/client';
 
 // api request to create an item
 const handle: NextApiHandler = async (req, res) => {
-  const { name, imageUrl, tags } = req.body;
+  const { name, imageUrl, tags, diningHall } = req.body;
   const data: Prisma.Args<typeof prisma.item, 'create'>['data'] = {
     name,
     imageUrl: imageUrl ?? '',
     slug: transformNameToSlug(name),
+    diningHallId: diningHall,
   };
 
   if (tags && Array.isArray(tags)) {
