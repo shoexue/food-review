@@ -23,7 +23,14 @@ const handle: NextApiHandler = async (req, res) => {
 
   const result = await prisma.item.create({
     data,
+    include: {
+      tags: true,
+      _count: { select: { reviews: true } },
+      diningHall: true,
+      reviews: true,
+    },
   });
+
   res.json(result);
 };
 

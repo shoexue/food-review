@@ -1,4 +1,4 @@
-import { types } from 'mobx-state-tree';
+import { Instance, types } from 'mobx-state-tree';
 import { Tag as PrismaTag, TagOnItem as TOI } from '@prisma/client';
 
 const Tag = types.model('Tag', {
@@ -18,4 +18,6 @@ const TagMap = types
     },
   }));
 
+type ITag = Instance<typeof Tag>;
 export { Tag, TagMap };
+export { type ITag };

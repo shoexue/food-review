@@ -1,11 +1,12 @@
 import { Item } from '@prisma/client';
 import { useEffect, useState } from 'react';
+import { UseItemsItem } from './useItems';
 
 type _S = { slug: string };
 type _I = { itemId: string };
 type UseItemParams = _S | _I;
 
-const emptyItem: Item = {
+const emptyItem: UseItemsItem = {
   id: '',
   createdAt: new Date(),
   updatedAt: new Date(),
@@ -15,11 +16,14 @@ const emptyItem: Item = {
   slug: '',
   verified: false,
   diningHallId: '',
+  reviews: [],
+  tags: [],
+  diningHall: { id: '', name: '' },
 };
 
 const useItem = (params: UseItemParams) => {
   const [loading, setLoading] = useState(false);
-  const [item, setItems] = useState<Item>(emptyItem);
+  const [item, setItems] = useState<UseItemsItem>(emptyItem);
   const [error, setError] = useState('');
 
   const refetch = () => {

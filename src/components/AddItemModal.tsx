@@ -33,6 +33,7 @@ import { makeItem } from '@/lib/review/make-item';
 import { makeReview } from '@/lib/review/make-review';
 import { getItem } from '@/lib/review/get-item';
 import DiningHallSelect from './DiningHallSelect';
+import TagsCheckbox from './TagsCheckbox';
 // import { toast } from "@/components/ui/use-toast"
 
 const FormSchema = z.object({
@@ -63,6 +64,7 @@ const FormSchema = z.object({
     .min(0, { message: 'min is 0' })
     .max(10, { message: 'max is 10' }),
   diningHall: z.string(),
+  tags: z.record(z.string().optional(), z.boolean().optional()),
 });
 
 type IFormData = z.infer<typeof FormSchema>;
@@ -100,11 +102,16 @@ const AddItemModal: React.FC<IAddItemModal> = ({ open, onClose }) => {
       ),
     });
 
-    const _item = await makeItem(data);
+    const { tags: _tags, ...rest } = data;
+    const tags = Object.entries(_tags)
+      .filter(([id, checked]) => !!checked)
+      .map(([id, checked]) => id);
+
+    const _item = await makeItem({ ...rest, tags });
     const review = await makeReview({ ...data, itemId: _item.id });
     const item = await getItem(_item.id); // necessary because this will have the correct score
 
-    store.addItem(item, [review]);
+    store.addItem(item);
     reset();
     onClose();
   };
@@ -112,7 +119,7 @@ const AddItemModal: React.FC<IAddItemModal> = ({ open, onClose }) => {
   return (
     <Dialog open={open} modal>
       <Toaster />
-      <DialogContent className='sm:max-w-[425px]'>
+      <DialogContent className='sm:max-w-[425px] overflow-y-scroll max-h-screen'>
         <DialogHeader>
           <DialogTitle>Add a Food Item</DialogTitle>
           <DialogDescription>
@@ -123,7 +130,12 @@ const AddItemModal: React.FC<IAddItemModal> = ({ open, onClose }) => {
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
+          <form
+            onSubmit={form.handleSubmit(onSubmit, (e) => {
+              console.log(e);
+            })}
+            className='space-y-4'
+          >
             <FormField
               control={form.control}
               name='name'
@@ -143,6 +155,7 @@ const AddItemModal: React.FC<IAddItemModal> = ({ open, onClose }) => {
             />
 
             <DiningHallSelect />
+            <TagsCheckbox />
 
             <FormField
               control={form.control}

@@ -1,4 +1,4 @@
-import { Item, Review, Tag } from '@prisma/client';
+import { DiningHall, Item, Review, Tag, TagOnItem } from '@prisma/client';
 import { useEffect, useState } from 'react';
 
 interface UseItemsParams {
@@ -7,8 +7,8 @@ interface UseItemsParams {
 
 export interface UseItemsItem extends Item {
   reviews: Review[];
-  tags: Tag[];
-  diningHallId: string;
+  tags: TagOnItem[];
+  diningHall: DiningHall;
 }
 
 const useItems = (params: UseItemsParams) => {

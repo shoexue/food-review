@@ -2,11 +2,7 @@ import { Instance, SnapshotIn, SnapshotOut, types } from 'mobx-state-tree';
 import { Review, ReviewArray } from './Review';
 import { Item } from './Item';
 import { Tag, TagMap } from './Tag';
-import {
-  Item as PrismItem,
-  Review as PrismaReview,
-  TagOnItem as PrismaTag,
-} from '@prisma/client';
+import { Item as PrismItem, Review as PrismaReview } from '@prisma/client';
 import { Settings } from './Settings';
 import { DiningHallMap } from './DiningHall';
 import { UseItemsItem } from '@/hooks/useItems';
@@ -36,7 +32,7 @@ const RootStore = types
             reviews: ra,
             createdAt: new Date(createdAt),
             updatedAt: new Date(updatedAt),
-            tags: tags.map((t) => t.id),
+            tags: tags.map(({ tagId }) => tagId),
             diningHall: diningHallId,
           };
         })
@@ -58,8 +54,8 @@ const RootStore = types
       const i = self.items.find((i) => i.id === id);
       return i;
     },
-    addItem(item: PrismItem, reviews: PrismaReview[]) {
-      const { createdAt, updatedAt, ...rest } = item;
+    addItem(item: UseItemsItem) {
+      const { createdAt, updatedAt, reviews, tags, ...rest } = item;
 
       const x = ReviewArray.create().init(reviews);
 
@@ -69,7 +65,7 @@ const RootStore = types
         createdAt: new Date(createdAt),
         updatedAt: new Date(updatedAt),
         diningHall: item.diningHallId,
-        tags: [],
+        tags: tags.map(({ tagId }) => tagId),
       });
 
       self.items.push(i);
