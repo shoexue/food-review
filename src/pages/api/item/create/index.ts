@@ -9,7 +9,7 @@ const handle: NextApiHandler = async (req, res) => {
   const data: Prisma.Args<typeof prisma.item, 'create'>['data'] = {
     name,
     imageUrl: imageUrl ?? '',
-    slug: transformNameToSlug(name),
+    slug: await transformNameToSlug(name),
     diningHallId: diningHall,
   };
 
