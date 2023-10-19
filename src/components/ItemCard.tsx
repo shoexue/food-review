@@ -10,6 +10,9 @@ import {
   CardFooter,
 } from './ui/card';
 import Image from 'next/image';
+import { Badge } from "@/components/ui/badge"
+
+
 
 import Link from 'next/link';
 import { observer } from 'mobx-react-lite';
@@ -68,23 +71,24 @@ const ItemCard: React.FC<IItemCardProps> = observer(
           <p className='inline'>
             {Math.round((item.rating + Number.EPSILON) * 10) / 10}/10
           </p>
-          <div className='flex space-x-0.5 flex-wrap space-y-0.5 items-center'>
-            <span className='bg-blue-200 px-3 py-0.5 rounded-full'>
+        </CardContent>
+        <CardFooter className='block'>
+          <div className='flex space-x-1 flex-wrap space-y-1 items-center my-2'>
+            <Badge variant="default">
               {diningHalls.halls.get(item.diningHall)?.name}
-            </span>
+            </Badge>
             {item.tags.map((tagId) => {
               return (
-                <span
+                <Badge
+                  variant="secondary"
                   key={tagId}
-                  className='bg-gray-300 px-3 py-0.5 rounded-full'
                 >
                   {tags.tags.get(tagId)?.value}
-                </span>
+                </Badge>
               );
             })}
           </div>
-        </CardContent>
-        <CardFooter>
+
           <Button onClick={() => onReviewClick(item.id)}>
             <PlusIcon className='w-4 h-4 mr-2' /> Review
           </Button>
