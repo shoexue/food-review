@@ -7,6 +7,7 @@ const Settings = types
   .actions((self) => ({
     toggleShowUnverified() {
       self.showUnverified = !self.showUnverified;
+      console.log(self.showUnverified);
     },
   }));
 

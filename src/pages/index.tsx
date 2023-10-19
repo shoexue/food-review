@@ -10,14 +10,16 @@ import { Button } from '@/components/ui/button';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import ReviewModal from '@/components/ReviewModal';
 import { Input } from '@/components/ui/input';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import SiteHeader from '@/components/SiteHeader';
 
 const Home = observer(() => {
   const { items, settings, itemsInitialized } = store;
 
-  const [addItemModalOpen, setAddItemModalOpen] = useState(false);
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [reviewItemId, setReviewItemId] = useState('');
-
+  console.log('Show unverified ', settings.showUnverified)
   const onItemReviewClick = (itemId: string) => {
     setReviewItemId(itemId);
     setReviewModalOpen(true);
@@ -26,24 +28,14 @@ const Home = observer(() => {
   console.log('items initialized? ', itemsInitialized);
   return (
     <div className='flex flex-col items-center gap-y-4 mx-12 md:mx-48'>
+      <SiteHeader />
       <h1 className='scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center'>
         {"New Rez's Dishes"}
       </h1>
-      <div className='flex'>
-        <p>Show unverified?</p>
-        <Input
-          type='checkbox'
-          checked={settings.showUnverified}
-          onChange={(e) => settings.toggleShowUnverified()}
-        />
-      </div>
       {!itemsInitialized ? (
         <Spinner />
       ) : (
         <>
-          <Button onClick={() => setAddItemModalOpen(true)}>
-            <PlusIcon className='w-4 h-4 mr-2' /> Item
-          </Button>
           <div className='grid w-full grid-colc-1 lg:grid-cols-3 gap-4'>
             {items.map((i) => (
               <ItemCard
@@ -55,10 +47,6 @@ const Home = observer(() => {
           </div>
         </>
       )}
-      <AddItemModal
-        open={addItemModalOpen}
-        onClose={() => setAddItemModalOpen(false)}
-      />
       <ReviewModal
         open={reviewModalOpen}
         onClose={() => setReviewModalOpen(false)}
