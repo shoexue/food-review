@@ -49,10 +49,6 @@ const SiteHeader: React.FC<SiteHeader> = ({ }) => {
     });
 
     const reset = () => {
-        form.setValue('score', 0);
-        form.setValue('name', '');
-        form.setValue('review', '');
-        form.setValue('title', '');
         form.setValue('diningHall', '');
         //reset the tags 
     };
