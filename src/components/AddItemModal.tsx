@@ -62,7 +62,8 @@ const FormSchema = z.object({
   score: z
     .number()
     .min(0, { message: 'min is 0' })
-    .max(10, { message: 'max is 10' }),
+    .max(10, { message: 'max is 10' })
+    .default(0),
   diningHall: z.string(),
   tags: z.record(z.string().optional(), z.boolean().optional()),
 });
