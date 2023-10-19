@@ -1,6 +1,8 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
+import placeholderImage from '../../public/Untitled.png';
+
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
@@ -35,7 +37,7 @@ const formatDate = (d: Date) => {
 
 const getImage = (src: string | undefined) => {
   if (!src || src === '') {
-    return 'https://static.ezrahuang.com/file/new-res-meal-review/Screenshot 2023-05-28 103355.png';
+    return placeholderImage;
   } else {
     return src;
   }
