@@ -94,6 +94,22 @@ npx prisma db seed
 You can run `npx prisma studio` to visualize data in the databases;
 Run `npx prisma db seed` to seed the database with tags
 
+Admin page password setup:
+Generate admin password:
+
+```
+openssl rand -hex 4096
+```
+
+Add line to env file:
+
+```
+SECRET_KEY="<random bytes>"
+
+```
+
+You can then access the page by going to /admin?password=\<the password you generated\>
+
 Planned features (in decreasing order of importance):
 
 - image support
