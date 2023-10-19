@@ -109,7 +109,7 @@ const ReviewModal: React.FC<IReviewButtonProps> = ({
   return (
     <Dialog open={open}>
       <Toaster />
-      <DialogContent className='sm:max-w-[425px]'>
+      <DialogContent className='overflow-y-scroll max-w-sm md:max-w-l lg:max-w-xl max-h-[36rem]'>
         <DialogHeader>
           <DialogTitle>Add a Review</DialogTitle>
           <DialogDescription>
