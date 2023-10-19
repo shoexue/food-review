@@ -6,44 +6,55 @@ import { store } from '@/lib/types';
 import AddItemModal from '@/components/AddItemModal';
 import ItemCard from '@/components/ItemCard';
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { PlusIcon } from '@heroicons/react/24/outline';
 import ReviewModal from '@/components/ReviewModal';
-import { Input } from '@/components/ui/input';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
 import SiteHeader from '@/components/SiteHeader';
 
 const Home = observer(() => {
-  const { items, settings, itemsInitialized } = store;
+  const { items, itemsInitialized, diningHalls, settings } = store;
 
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [reviewItemId, setReviewItemId] = useState('');
-  console.log('Show unverified ', settings.showUnverified)
+
   const onItemReviewClick = (itemId: string) => {
     setReviewItemId(itemId);
     setReviewModalOpen(true);
   };
 
   console.log('items initialized? ', itemsInitialized);
+
+  const getTitle = () => {
+    if (settings.selectedDiningHallId === 'all') return 'All Dishes';
+    else {
+      return `${
+        diningHalls.halls.get(settings.selectedDiningHallId)?.name
+      }'s dishes`;
+    }
+  };
+
   return (
     <div className='flex flex-col items-center gap-y-4 mx-12 md:mx-48'>
       <SiteHeader />
       <h1 className='scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center'>
-        {"New Rez's Dishes"}
+        {getTitle()}
       </h1>
       {!itemsInitialized ? (
         <Spinner />
       ) : (
         <>
           <div className='grid w-full grid-colc-1 lg:grid-cols-3 gap-4'>
-            {items.map((i) => (
-              <ItemCard
-                item={i}
-                key={i.id}
-                onReviewClick={(itemId) => onItemReviewClick(itemId)}
-              />
-            ))}
+            {items
+              .filter(
+                (item) =>
+                  settings.selectedDiningHallId === 'all' ||
+                  item.diningHall === settings.selectedDiningHallId
+              )
+              .map((i) => (
+                <ItemCard
+                  item={i}
+                  key={i.id}
+                  onReviewClick={(itemId) => onItemReviewClick(itemId)}
+                />
+              ))}
           </div>
         </>
       )}
