@@ -86,7 +86,7 @@ const AddItemModal: React.FC<IAddItemModal> = ({ open, onClose }) => {
     form.setValue('review', '');
     form.setValue('title', '');
     form.setValue('diningHall', '');
-    //reset the tags 
+    //reset the tags
   };
 
   const onCancel = () => {
