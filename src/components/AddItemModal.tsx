@@ -86,6 +86,7 @@ const AddItemModal: React.FC<IAddItemModal> = ({ open, onClose }) => {
     form.setValue('review', '');
     form.setValue('title', '');
     form.setValue('diningHall', '');
+    //reset the tags 
   };
 
   const onCancel = () => {
@@ -120,7 +121,7 @@ const AddItemModal: React.FC<IAddItemModal> = ({ open, onClose }) => {
   return (
     <Dialog open={open} modal>
       <Toaster />
-      <DialogContent className='sm:max-w-[425px] overflow-y-scroll max-h-screen'>
+      <DialogContent className='overflow-y-scroll max-w-sm md:max-w-2xl lg:max-w-4xl max-h-[36rem]'>
         <DialogHeader>
           <DialogTitle>Add a Food Item</DialogTitle>
           <DialogDescription>
@@ -154,10 +155,10 @@ const AddItemModal: React.FC<IAddItemModal> = ({ open, onClose }) => {
                 </FormItem>
               )}
             />
-
-            <DiningHallSelect />
-            <TagsCheckbox />
-
+            <div className='grid grid-cols-1 md:grid-cols-2 gap-y-3'>
+              <DiningHallSelect />
+              <TagsCheckbox />
+            </div>
             <FormField
               control={form.control}
               name='title'

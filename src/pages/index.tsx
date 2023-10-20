@@ -25,9 +25,8 @@ const Home = observer(() => {
   const getTitle = () => {
     if (settings.selectedDiningHallId === 'all') return 'All Dishes';
     else {
-      return `${
-        diningHalls.halls.get(settings.selectedDiningHallId)?.name
-      }'s dishes`;
+      return `${diningHalls.halls.get(settings.selectedDiningHallId)?.name
+        }'s dishes`;
     }
   };
 
