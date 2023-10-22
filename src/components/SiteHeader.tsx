@@ -1,38 +1,27 @@
 'use client';
 import React, { useState } from 'react';
-import MainNav from './MainNav';
 import { Switch } from './ui/switch';
 import { Label } from './ui/label';
 import { store } from '@/lib/types';
 import { Button } from './ui/button';
 import { PlusIcon } from '@heroicons/react/24/solid';
 import AddItemModal from './AddItemModal';
-import { Input } from './ui/input';
 import {
   Dialog,
   DialogContent,
   DialogTitle,
   DialogDescription,
-  DialogTrigger,
 } from './ui/dialog';
 import { useForm } from 'react-hook-form';
 import DiningHallSelect from './DiningHallSelect';
-import StarRating from './StarRating';
 import TagsCheckbox from './TagsCheckbox';
 import { DialogHeader, DialogFooter } from './ui/dialog';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { Textarea } from './ui/textarea';
+import { Form } from '@/components/ui/form';
 import { Toaster } from './ui/toaster';
 import { toast } from './ui/use-toast';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { observer } from 'mobx-react-lite';
 
 const FormSchema = z.object({
   diningHall: z.string().optional(),
@@ -43,18 +32,27 @@ type IFormData = z.infer<typeof FormSchema>;
 
 interface SiteHeader {}
 
-const SiteHeader: React.FC<SiteHeader> = ({}) => {
-  const { items, settings, itemsInitialized } = store;
+const SiteHeader: React.FC<SiteHeader> = observer(() => {
+  const { settings } = store;
   const [addItemModalOpen, setAddItemModalOpen] = useState(false);
   const [filterModalOpen, setFilterModalOpen] = useState(false);
 
   const form = useForm<IFormData>({
     resolver: zodResolver(FormSchema),
+    defaultValues: FormSchema.parse({
+      diningHall: settings.selectedDiningHallId,
+      tags: settings.selectedTags.toRecord(),
+    }),
   });
 
   const reset = () => {
-    form.setValue('diningHall', '');
-    //reset the tags
+    form.setValue('diningHall', 'all');
+    form.reset(
+      FormSchema.parse({
+        // diningHall: settings.selectedDiningHallId,    by default select all dining halls
+        tags: settings.selectedTags.toRecord(),
+      })
+    );
   };
 
   const onCancel = () => {
@@ -72,12 +70,19 @@ const SiteHeader: React.FC<SiteHeader> = ({}) => {
       ),
     });
 
-    const { tags: _tags, ...rest } = data;
+    const { tags: _tags, diningHall } = data;
     const tags = Object.entries(_tags)
       .filter(([id, checked]) => !!checked)
       .map(([id, checked]) => id);
 
+    settings.setSelectedTags(tags);
+
+    if (diningHall) {
+      settings.setSelectedDiningHallId(diningHall);
+    }
+
     setFilterModalOpen(false);
+    reset();
   };
 
   return (
@@ -102,12 +107,7 @@ const SiteHeader: React.FC<SiteHeader> = ({}) => {
               </DialogHeader>
 
               <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(onSubmit, (e) => {
-                    console.log(e);
-                  })}
-                  className='space-y-4'
-                >
+                <div className='space-y-4'>
                   <DiningHallSelect />
                   <TagsCheckbox />
                   {/* <FormField
@@ -124,10 +124,12 @@ const SiteHeader: React.FC<SiteHeader> = ({}) => {
                   <DialogFooter>
                     <div className='flex justify-between w-full'>
                       <Button onClick={() => onCancel()}>Cancel</Button>
-                      <Button type='submit'>Apply</Button>
+                      <Button onClick={form.handleSubmit(onSubmit)}>
+                        Apply
+                      </Button>
                     </div>
                   </DialogFooter>
-                </form>
+                </div>
               </Form>
             </DialogContent>
           </Dialog>
@@ -153,6 +155,6 @@ const SiteHeader: React.FC<SiteHeader> = ({}) => {
       />
     </header>
   );
-};
+});
 
 export default SiteHeader;

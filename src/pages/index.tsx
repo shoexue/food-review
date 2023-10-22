@@ -3,7 +3,6 @@
 import Spinner from '@/components/Spinner';
 import { observer } from 'mobx-react-lite';
 import { store } from '@/lib/types';
-import AddItemModal from '@/components/AddItemModal';
 import ItemCard from '@/components/ItemCard';
 import { useState } from 'react';
 import ReviewModal from '@/components/ReviewModal';
@@ -25,8 +24,9 @@ const Home = observer(() => {
   const getTitle = () => {
     if (settings.selectedDiningHallId === 'all') return 'All Dishes';
     else {
-      return `${diningHalls.halls.get(settings.selectedDiningHallId)?.name
-        }'s dishes`;
+      return `${
+        diningHalls.halls.get(settings.selectedDiningHallId)?.name
+      }'s dishes`;
     }
   };
 
@@ -46,6 +46,11 @@ const Home = observer(() => {
                 (item) =>
                   settings.selectedDiningHallId === 'all' ||
                   item.diningHall === settings.selectedDiningHallId
+              )
+              .filter(
+                (item) =>
+                  settings.selectedTags.tags.size === 0 ||
+                  item.hasSomeTags(settings.selectedTags.toIdArray())
               )
               .map((i) => (
                 <ItemCard

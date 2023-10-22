@@ -16,6 +16,22 @@ const Item = types
     tags: types.array(types.string),
     diningHall: '',
   })
+  .views((self) => ({
+    hasAllTags(ids: string[]) {
+      const isMissingTag = ids.some((id) => {
+        const found = self.tags.findIndex((t) => t === id) !== -1;
+        return !found;
+      });
+      return !isMissingTag;
+    },
+    hasSomeTags(ids: string[]) {
+      const hasATag = ids.some((id) => {
+        const found = self.tags.findIndex((t) => t === id) !== -1;
+        return found;
+      });
+      return hasATag;
+    },
+  }))
   .actions((self) => ({
     addReview(review: PrismaReview) {
       const numReviews = self.reviews.reviews.length;

@@ -82,6 +82,8 @@ const store = RootStore.create({
   diningHalls: {},
   settings: {
     showUnverified: true,
+    selectedTags: {},
+    selectedDiningHallId: 'all',
   },
 });
 

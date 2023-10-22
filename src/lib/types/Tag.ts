@@ -10,6 +10,18 @@ const TagMap = types
   .model('Tag Map', {
     tags: types.map(Tag),
   })
+  .views((self) => ({
+    toRecord() {
+      const record: Record<string, boolean> = {};
+      Array.from(self.tags.values()).forEach(({ id, value }) => {
+        record[id] = true;
+      });
+      return record;
+    },
+    toIdArray() {
+      return Array.from(self.tags.values()).map(({ id }) => id);
+    },
+  }))
   .actions((self) => ({
     init(tags: PrismaTag[]) {
       tags.forEach(({ id, value }) => {
