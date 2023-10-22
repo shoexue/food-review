@@ -1,52 +1,25 @@
-FROM node:18-alpine AS base
+FROM node:alpine
+WORKDIR /usr/app
 
-FROM base AS deps
-RUN apk add --no-cache libc6-compat
-WORKDIR /app
+RUN npm install --global pm2
+RUN npm install --global pnpm
 
-COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
-RUN \
-  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-  elif [ -f package-lock.json ]; then npm ci; \
-  elif [ -f pnpm-lock.yaml ]; then yarn global add pnpm && pnpm i --frozen-lockfile; \
-  else echo "Lockfile not found." && exit 1; \
-  fi
+COPY ./package.json ./
+COPY ./pnpm-lock.yaml ./
+RUN pnpm i
+COPY ./ ./
 
+ARG DATABASE_PASSWORD
+ARG SECRET_KEY
+ARG DB_HOST
+ARG DATABASE_URL="mysql://root:${DATABASE_PASSWORD}@${DB_HOST}}:3306/review"
 
-FROM base AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
+RUN DATABASE_URL=${DATABASE_URL} SECRET_KEY="${SECRET_KEY}" pnpm run build
+RUN npx -y prisma db push
+RUN npx -y prisma db seed
 
-RUN yarn build
-
-# If using npm comment out above and use below instead
-# RUN npm run build
-
-# Production image, copy all the files and run next
-FROM base AS runner
-WORKDIR /app
-
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
-
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-
-COPY --from=builder /app/public ./public
-
-RUN mkdir .next
-RUN chown nextjs:nodejs .next
-
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-
-USER nextjs
-
+ENV DATABASE_PASSWORD=${DATABASE_PASSWORD}
+ENV SECRET_KEY=${SECRET_KEY}
 EXPOSE 3000
 
-ENV PORT 3000
-# set hostname to localhost
-ENV HOSTNAME "0.0.0.0"
-
-CMD ["node", "server.js"]
+CMD [ "pm2-runtime", "npm", "--", "start" ]
