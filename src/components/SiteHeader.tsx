@@ -30,7 +30,7 @@ const FormSchema = z.object({
 
 type IFormData = z.infer<typeof FormSchema>;
 
-interface SiteHeader {}
+interface SiteHeader { }
 
 const SiteHeader: React.FC<SiteHeader> = observer(() => {
   const { settings } = store;
@@ -61,14 +61,14 @@ const SiteHeader: React.FC<SiteHeader> = observer(() => {
   };
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-    toast({
-      title: 'You submitted the following values:',
-      description: (
-        <pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
-          <code className='text-white'>{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
+    // toast({
+    //   title: 'You submitted the following values:',
+    //   description: (
+    //     <pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
+    //       <code className='text-white'>{JSON.stringify(data, null, 2)}</code>
+    //     </pre>
+    //   ),
+    // });
 
     const { tags: _tags, diningHall } = data;
     const tags = Object.entries(_tags)
@@ -108,6 +108,14 @@ const SiteHeader: React.FC<SiteHeader> = observer(() => {
 
               <Form {...form}>
                 <div className='space-y-4'>
+                  <div className='flex items-center space-x-3'>
+                    <Switch
+                      id='airplane-mode'
+                      checked={settings.showUnverified}
+                      onCheckedChange={(e) => settings.toggleShowUnverified()}
+                    />
+                    <Label htmlFor='airplane-mode'>Show unverified</Label>
+                  </div>
                   <DiningHallSelect />
                   <TagsCheckbox />
                   {/* <FormField
@@ -137,12 +145,6 @@ const SiteHeader: React.FC<SiteHeader> = observer(() => {
           <Button onClick={() => setAddItemModalOpen(true)}>
             <PlusIcon className='w-4 h-4 mr-2' /> Item
           </Button>
-          <Switch
-            id='airplane-mode'
-            checked={settings.showUnverified}
-            onCheckedChange={(e) => settings.toggleShowUnverified()}
-          />
-          <Label htmlFor='airplane-mode'>Show unverified</Label>
         </div>
         {/* </div> */}
         {/* <div className='w-96 relative '>

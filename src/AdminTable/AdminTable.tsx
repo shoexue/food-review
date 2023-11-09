@@ -107,18 +107,17 @@ export function AdminTable<TData, TValue>({
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                     <div
                       {...{
                         onMouseDown: header.getResizeHandler(),
                         onTouchStart: header.getResizeHandler(),
-                        className: ` h-4 bg-black  resizer ${
-                          header.column.getIsResizing()
+                        className: ` h-4 bg-black  resizer ${header.column.getIsResizing()
                             ? 'isResizing bg-green-300'
                             : ''
-                        }`,
+                          }`,
                       }}
                     />
                   </TableHead>

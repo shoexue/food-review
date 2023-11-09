@@ -24,9 +24,8 @@ const Home = observer(() => {
   const getTitle = () => {
     if (settings.selectedDiningHallId === 'all') return 'All Dishes';
     else {
-      return `${
-        diningHalls.halls.get(settings.selectedDiningHallId)?.name
-      }'s dishes`;
+      return `${diningHalls.halls.get(settings.selectedDiningHallId)?.name
+        }'s dishes`;
     }
   };
 
@@ -40,7 +39,7 @@ const Home = observer(() => {
         <Spinner />
       ) : (
         <>
-          <div className='grid w-full grid-colc-1 lg:grid-cols-3 gap-4'>
+          <div className='grid w-full grid-cols-1 lg:grid-cols-3 gap-4'>
             {items
               .filter(
                 (item) =>
@@ -53,11 +52,13 @@ const Home = observer(() => {
                   item.hasSomeTags(settings.selectedTags.toIdArray())
               )
               .map((i) => (
-                <ItemCard
-                  item={i}
-                  key={i.id}
-                  onReviewClick={(itemId) => onItemReviewClick(itemId)}
-                />
+                <div className='h-[32rem]'>
+                  <ItemCard
+                    item={i}
+                    key={i.id}
+                    onReviewClick={(itemId) => onItemReviewClick(itemId)}
+                  />
+                </div>
               ))}
           </div>
         </>

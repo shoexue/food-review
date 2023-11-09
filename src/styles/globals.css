@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    /* --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
 
     --card: 0 0% 100%;
@@ -32,7 +32,53 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
 
-    --radius: 0.5rem;
+    --radius: 0.5rem; */
+
+    --background: 0 0% 100%;
+    /* done */
+    --foreground: 0 0% 0%;
+    /* done */
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 0%;
+    /* done */
+
+    --popover: 0 0% 100%;
+    /* done */
+    --popover-foreground: 354 85% 52%;
+
+    --primary: 0 0% 0%;
+    /* done */
+    --primary-foreground: 0 0% 100%;
+    /* done */
+
+    --secondary: 354 85% 52%;
+    /* done */
+    --secondary-foreground: 0 0% 100%;
+    /* done */
+
+    --muted: 0 0% 96%;
+    /* done */
+    --muted-foreground: 0 0% 51%;
+    /* done */
+
+    --accent: 354 85% 52%;
+    /* done */
+    --accent-foreground: 0 0% 100%;
+    /* done */
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 0 0% 96%;
+    /* done */
+    --input: 0 0% 96%;
+    /* done */
+    --ring: 0 0% 0%;
+    /* done */
+
+    --radius: 0.3rem;
+    /* done */
   }
 
   .dark {
@@ -70,6 +116,7 @@
   * {
     @apply border-border;
   }
+
   body {
     @apply bg-background text-foreground;
   }

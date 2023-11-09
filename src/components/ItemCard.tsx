@@ -29,9 +29,9 @@ const ItemCard: React.FC<IItemCardProps> = observer(
   ({ item, onReviewClick }) => {
     const { tags, diningHalls } = store;
     return (
-      <Card key={item.id} className='group-hover:bg-slate-50'>
+      <Card key={item.id} className='group group-hover:bg-muted w-full h-full'>
         <Link href={`/${item.slug}`} className='group' key={item.id}>
-          <CardContent className='bg-slate-100 flex items-center justify-center h-64'>
+          <CardContent className='bg-muted flex items-center justify-center h-64'>
             <div className='relative w-full h-full'>
               <Image src={getImage(item.imageUrl)} fill alt='' />
             </div>
@@ -72,15 +72,15 @@ const ItemCard: React.FC<IItemCardProps> = observer(
             {Math.round((item.rating + Number.EPSILON) * 10) / 10}/10
           </p>
         </CardContent>
-        <CardFooter className='block'>
-          <div className='flex space-x-1 flex-wrap space-y-1 items-center my-2'>
+        <CardFooter className='flex flex-col justify-between items-start h-32'>
+          <div className='flex flex-wrap items-center overflow-y-hidden'>
             <Badge variant="default">
               {diningHalls.halls.get(item.diningHall)?.name}
             </Badge>
             {item.tags.map((tagId) => {
               return (
                 <Badge
-                  variant="secondary"
+                  variant="outline"
                   key={tagId}
                 >
                   {tags.tags.get(tagId)?.value}
@@ -89,7 +89,7 @@ const ItemCard: React.FC<IItemCardProps> = observer(
             })}
           </div>
 
-          <Button onClick={() => onReviewClick(item.id)}>
+          <Button className='' variant={'outline'} onClick={() => onReviewClick(item.id)}>
             <PlusIcon className='w-4 h-4 mr-2' /> Review
           </Button>
         </CardFooter>

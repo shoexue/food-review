@@ -47,21 +47,23 @@ const FormSchema = z.object({
     }),
   review: z
     .string()
-    .min(10, {
+    .min(0, {
       message: 'Review must be at least 10 characters long.',
     })
     .max(160, {
       message: 'Review must not be longer than 160 characters.',
-    }),
+    })
+    .default(""),
   title: z
     .string()
-    .min(1, {
+    .min(0, {
       message: 'Review title must be at least 1 character long',
     })
-    .max(30, { message: 'Review title must not be longer than 30 characters' }),
+    .max(30, { message: 'Review title must not be longer than 30 characters' })
+    .default(""),
   score: z
     .number()
-    .min(0, { message: 'min is 0' })
+    .min(1, { message: 'min is 1' })
     .max(10, { message: 'max is 10' })
     .default(0),
   diningHall: z.string(),
@@ -95,14 +97,14 @@ const AddItemModal: React.FC<IAddItemModal> = ({ open, onClose }) => {
   };
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-    toast({
-      title: 'You submitted the following values:',
-      description: (
-        <pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
-          <code className='text-white'>{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
+    // toast({
+    //   title: 'Item Added!',
+    //   description: (
+    //     <pre className='mt-2 w-[340px] rounded-md bg-slate-950 p-4'>
+    //       <code className='text-white'>{JSON.stringify(data, null, 2)}</code>
+    //     </pre>
+    //   ),
+    // });
 
     const { tags: _tags, ...rest } = data;
     const tags = Object.entries(_tags)
