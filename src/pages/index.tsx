@@ -52,10 +52,9 @@ const Home = observer(() => {
                   item.hasSomeTags(settings.selectedTags.toIdArray())
               )
               .map((i) => (
-                <div className='h-[32rem]'>
+                <div className='h-[32rem]' key={i.id}>
                   <ItemCard
                     item={i}
-                    key={i.id}
                     onReviewClick={(itemId) => onItemReviewClick(itemId)}
                   />
                 </div>
