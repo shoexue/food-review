@@ -9,13 +9,19 @@ import {
 import { IItem } from '@/lib/types/Item';
 import { EllipsisHorizontalIcon } from '@heroicons/react/24/solid';
 import { HeaderContext } from '@tanstack/react-table';
+import clsx from 'clsx';
 
 interface HeaderCellProps {
   col: HeaderContext<IItem, unknown>;
   title: string;
+  sortable?: boolean;
 }
 
-const HeaderCell: React.FC<HeaderCellProps> = ({ col, title }) => {
+const HeaderCell: React.FC<HeaderCellProps> = ({
+  col,
+  title,
+  sortable = true,
+}) => {
   const handleCheckedChange = (checked: boolean) => {
     if (!checked) {
       col.column.clearSorting();
@@ -28,53 +34,65 @@ const HeaderCell: React.FC<HeaderCellProps> = ({ col, title }) => {
   const ascending = sorted && col.column.getIsSorted() === 'asc';
 
   return (
-    <div className='flex items-center'>
+    <div className='w-full h-full flex items-center px-4 border border-red-300'>
       <span>{title}</span>
-      <Popover>
-        <PopoverTrigger className='ml-auto'>
-          <EllipsisHorizontalIcon className='w-4' />
-        </PopoverTrigger>
-        <PopoverContent>
-          <div>
-            <div className='border-black border-2 px-3 py-2 rounded-md'>
-              <div className='flex items-center space-x-2'>
-                <Label>Sort?</Label>
-                <Checkbox
-                  onCheckedChange={handleCheckedChange}
-                  checked={sorted}
-                />
-              </div>
-              <div
-                className={`flex flex-col space-y-2 ${sorted ? '' : 'hidden'}`}
-              >
+
+      <div
+        onMouseDown={col.header.getResizeHandler()}
+        onTouchStart={col.header.getResizeHandler()}
+        className={`cursor-ew-resize absolute right-0 top-0 w-2 h-full hover:bg-red-200 ${
+          col.column.getIsResizing() && 'bg-red-200'
+        }`}
+      />
+      {sortable && (
+        <Popover>
+          <PopoverTrigger className='ml-auto'>
+            <EllipsisHorizontalIcon className='w-4 mx-2' />
+          </PopoverTrigger>
+          <PopoverContent>
+            <div>
+              <div className='border-black border-2 px-3 py-2 rounded-md'>
                 <div className='flex items-center space-x-2'>
-                  <Label>Ascending</Label>
+                  <Label>Sort?</Label>
                   <Checkbox
-                    checked={ascending}
-                    onCheckedChange={() => col.column.toggleSorting(false)}
+                    onCheckedChange={handleCheckedChange}
+                    checked={sorted}
                   />
                 </div>
-                <div className='flex items-center space-x-2'>
-                  <Label>Descending</Label>
-                  <Checkbox
-                    checked={!ascending}
-                    onCheckedChange={() => col.column.toggleSorting(true)}
-                  />
+                <div
+                  className={`flex flex-col space-y-2 ${
+                    sorted ? '' : 'hidden'
+                  }`}
+                >
+                  <div className='flex items-center space-x-2'>
+                    <Label>Ascending</Label>
+                    <Checkbox
+                      checked={ascending}
+                      onCheckedChange={() => col.column.toggleSorting(false)}
+                    />
+                  </div>
+                  <div className='flex items-center space-x-2'>
+                    <Label>Descending</Label>
+                    <Checkbox
+                      checked={!ascending}
+                      onCheckedChange={() => col.column.toggleSorting(true)}
+                    />
+                  </div>
                 </div>
               </div>
+              <div className='border-black border-2 px-3 py-2 rounded-md'>
+                <Label>
+                  Filter:
+                  <Input
+                    value={col.column.getFilterValue() as string}
+                    onChange={(e) => col.column.setFilterValue(e.target.value)}
+                  />
+                </Label>
+              </div>
             </div>
-            <div className='border-black border-2 px-3 py-2 rounded-md'>
-              <Label>
-                Filter:
-                <Input
-                  value={col.column.getFilterValue() as string}
-                  onChange={(e) => col.column.setFilterValue(e.target.value)}
-                />
-              </Label>
-            </div>
-          </div>
-        </PopoverContent>
-      </Popover>
+          </PopoverContent>
+        </Popover>
+      )}
     </div>
   );
 };

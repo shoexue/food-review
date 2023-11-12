@@ -52,5 +52,6 @@ const ReviewArray = types
   }));
 
 type IReview = Instance<typeof Review>;
+type IReviewArray = Instance<typeof ReviewArray>;
 export { Review, ReviewArray };
-export type { IReview };
+export type { IReview, IReviewArray };

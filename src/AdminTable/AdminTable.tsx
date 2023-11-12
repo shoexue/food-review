@@ -54,14 +54,8 @@ export function AdminTable<TData, TValue>({
     onColumnFiltersChange: setColumnFilters,
     columnResizeMode: 'onChange',
 
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-    },
+    state: { sorting, columnFilters, columnVisibility },
   });
-
-  console.log(table.getState().columnSizing);
 
   return (
     <div className='rounded-md border'>
@@ -93,7 +87,10 @@ export function AdminTable<TData, TValue>({
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <Table className='overflow-x-scroll'>
+      <Table
+        className='overflow-x-scroll border border-green-600'
+        style={{ width: table.getCenterTotalSize() }}
+      >
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
@@ -104,22 +101,12 @@ export function AdminTable<TData, TValue>({
                     colSpan={header.colSpan}
                     style={{ width: header.getSize() }}
                   >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
+                    <div className='relative h-full flex items-center'>
+                      {flexRender(
                         header.column.columnDef.header,
                         header.getContext()
                       )}
-                    <div
-                      {...{
-                        onMouseDown: header.getResizeHandler(),
-                        onTouchStart: header.getResizeHandler(),
-                        className: ` h-4 bg-black  resizer ${header.column.getIsResizing()
-                            ? 'isResizing bg-green-300'
-                            : ''
-                          }`,
-                      }}
-                    />
+                    </div>
                   </TableHead>
                 );
               })}
@@ -134,7 +121,7 @@ export function AdminTable<TData, TValue>({
                 data-state={row.getIsSelected() && 'selected'}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id} style={{ width: 100 }}>
+                  <TableCell key={cell.id} className='overflow-y-scroll h-12'>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}

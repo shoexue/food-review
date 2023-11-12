@@ -1,7 +1,6 @@
 import { Instance, types } from 'mobx-state-tree';
 import { ReviewArray } from './Review';
 import { Item, Review as PrismaReview } from '@prisma/client';
-import { DiningHall } from './DiningHall';
 
 const Item = types
   .model('Item', {
@@ -15,6 +14,7 @@ const Item = types
     reviews: ReviewArray,
     tags: types.array(types.string),
     diningHall: '',
+    verified: types.boolean,
   })
   .views((self) => ({
     hasAllTags(ids: string[]) {
@@ -38,6 +38,9 @@ const Item = types
       self.rating =
         (self.rating * numReviews + review.rating) / (numReviews + 1);
       self.reviews.addReview(review);
+    },
+    setVerified(verified: boolean) {
+      self.verified = verified;
     },
   }));
 

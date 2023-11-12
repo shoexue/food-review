@@ -30,7 +30,7 @@ const FormSchema = z.object({
 
 type IFormData = z.infer<typeof FormSchema>;
 
-interface SiteHeader { }
+interface SiteHeader {}
 
 const SiteHeader: React.FC<SiteHeader> = observer(() => {
   const { settings } = store;
@@ -96,7 +96,7 @@ const SiteHeader: React.FC<SiteHeader> = observer(() => {
         <div className='flex items-center space-x-3'>
           <Dialog open={filterModalOpen} modal>
             <Toaster />
-            <DialogContent className='overflow-y-scroll max-w-[425px] max-w-sm md:max-w-l lg:max-w-xl max-h-[36rem]'>
+            <DialogContent className='overflow-y-scroll max-w-sm md:max-w-l lg:max-w-xl max-h-[36rem]'>
               <DialogHeader>
                 <DialogTitle>Filter Items</DialogTitle>
                 <DialogDescription>
