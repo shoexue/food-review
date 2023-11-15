@@ -29,6 +29,8 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "cmdk": "^0.2.0",
+    "downloadjs": "^1.4.7",
+    "html2canvas": "^1.4.1",
     "lucide-react": "^0.287.0",
     "mobx": "^6.10.2",
     "mobx-react-lite": "^4.0.5",
