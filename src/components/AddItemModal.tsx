@@ -68,6 +68,9 @@ const FormSchema = z.object({
     .default(0),
   diningHall: z.string(),
   tags: z.record(z.string().optional(), z.boolean().optional()),
+  image: z
+    .instanceof(File)
+    .optional(),
 });
 
 type IFormData = z.infer<typeof FormSchema>;
@@ -202,6 +205,20 @@ const AddItemModal: React.FC<IAddItemModal> = ({ open, onClose }) => {
                 <FormItem>
                   <FormLabel>Score</FormLabel>
                   <StarRating />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='image'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Image</FormLabel>
+                  <div className='w-fit'>
+                    {/* <div className='absolute w-[6.5rem] h-10 bg-primary -z-10 rounded-l-md'></div> */}
+                    <Input id="image" type="file" className='' />
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}

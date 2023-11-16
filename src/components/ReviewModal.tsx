@@ -54,6 +54,9 @@ const FormSchema = z.object({
     .min(1, { message: 'min is 1' })
     .max(10, { message: 'max is 10' })
     .default(0),
+  image: z
+    .instanceof(File)
+    .optional(),
 });
 
 interface IReviewButtonProps {
@@ -162,6 +165,20 @@ const ReviewModal: React.FC<IReviewButtonProps> = ({
                 <FormItem>
                   <FormLabel>Score</FormLabel>
                   <StarRating />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name='image'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Image</FormLabel>
+                  <div className='w-fit'>
+                    {/* <div className='absolute w-[6.5rem] h-10 bg-primary -z-10 rounded-l-md'></div> */}
+                    <Input id="image" type="file" className='' />
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}
