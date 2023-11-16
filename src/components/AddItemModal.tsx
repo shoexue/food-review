@@ -36,6 +36,9 @@ import DiningHallSelect from './DiningHallSelect';
 import TagsCheckbox from './TagsCheckbox';
 // import { toast } from "@/components/ui/use-toast"
 
+const MAX_FILE_SIZE = 5000000;
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+
 const FormSchema = z.object({
   name: z
     .string()
@@ -69,13 +72,9 @@ const FormSchema = z.object({
   diningHall: z.string(),
   tags: z.record(z.string().optional(), z.boolean().optional()),
   image: z
+    // .instanceof(File)
     .any()
-    // .refine((files) => files?.length == 1, "Image is required.")
-    // .refine((files) => files?.[0]?.size <= MAX_FILE_SIZE, `Max file size is 5MB.`)
-    .refine(
-      (files) => ["image/jpeg", "image/jpg", "image/png", "image/webp"].includes(files?.[0]?.type),
-      ".jpg, .jpeg, .png and .webp files are accepted."
-    )
+    // .refine((files) => files?.[0]?.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
     .optional(),
 });
 
@@ -221,10 +220,7 @@ const AddItemModal: React.FC<IAddItemModal> = ({ open, onClose }) => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Image</FormLabel>
-                  <div className='w-fit'>
-                    {/* <div className='absolute w-[6.5rem] h-10 bg-primary -z-10 rounded-l-md'></div> */}
-                    <Input id="image" type="file" className='' />
-                  </div>
+                  <Input id="image" type="file" accept=".png,.jpeg,.jpg" className='' {...field} />
                   <FormMessage />
                 </FormItem>
               )}
@@ -238,7 +234,7 @@ const AddItemModal: React.FC<IAddItemModal> = ({ open, onClose }) => {
           </form>
         </Form>
       </DialogContent>
-    </Dialog>
+    </Dialog >
   );
 };
 

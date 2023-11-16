@@ -32,6 +32,9 @@ import { store } from '@/lib/types';
 import { makeReview } from '@/lib/review/make-review';
 // import { toast } from "@/components/ui/use-toast"
 
+const MAX_FILE_SIZE = 5000000;
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+
 const FormSchema = z.object({
   review: z
     .string()
@@ -55,13 +58,9 @@ const FormSchema = z.object({
     .max(10, { message: 'max is 10' })
     .default(0),
   image: z
+    // .instanceof(File)
     .any()
-    // .refine((files) => files?.length == 1, "Image is required.")
-    // .refine((files) => files?.[0]?.size <= 500000, `Max file size is 5MB.`)
-    .refine(
-      (files) => ["image/jpeg", "image/jpg", "image/png", "image/webp"].includes(files?.[0]?.type),
-      ".jpg, .jpeg, .png and .webp files are accepted."
-    )
+    // .refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
     .optional(),
 });
 
@@ -89,7 +88,7 @@ const ReviewModal: React.FC<IReviewButtonProps> = ({
   };
 
   const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    // console.log(data);
+    console.log(data);
     // toast({
     //   title: 'You submitted the following values:',
     //   description: (
@@ -181,10 +180,7 @@ const ReviewModal: React.FC<IReviewButtonProps> = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Image</FormLabel>
-                  <div className='w-fit'>
-                    {/* <div className='absolute w-[6.5rem] h-10 bg-primary -z-10 rounded-l-md'></div> */}
-                    <Input id="image" type="file" className='' />
-                  </div>
+                  <Input id="image" type="file" className='' accept=".png,.jpeg,.jpg" {...field} />
                   <FormMessage />
                 </FormItem>
               )}
