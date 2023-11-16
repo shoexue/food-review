@@ -69,7 +69,13 @@ const FormSchema = z.object({
   diningHall: z.string(),
   tags: z.record(z.string().optional(), z.boolean().optional()),
   image: z
-    .instanceof(File)
+    .any()
+    // .refine((files) => files?.length == 1, "Image is required.")
+    // .refine((files) => files?.[0]?.size <= MAX_FILE_SIZE, `Max file size is 5MB.`)
+    .refine(
+      (files) => ["image/jpeg", "image/jpg", "image/png", "image/webp"].includes(files?.[0]?.type),
+      ".jpg, .jpeg, .png and .webp files are accepted."
+    )
     .optional(),
 });
 
