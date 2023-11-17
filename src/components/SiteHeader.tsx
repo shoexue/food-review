@@ -22,6 +22,7 @@ import { toast } from './ui/use-toast';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { observer } from 'mobx-react-lite';
+import { Input } from './ui/input';
 
 const FormSchema = z.object({
   diningHall: z.string().optional(),
@@ -87,7 +88,7 @@ const SiteHeader: React.FC<SiteHeader> = observer(() => {
 
   return (
     <header>
-      <div className='flex flex-row w-screen max-w-5xl justify-between py-2 '>
+      <div className='flex flex-col gap-2 lg:flex-row w-screen max-w-5xl justify-between py-2 '>
         {/* <div className='flex flex-row items-center'> */}
         {/* <MainNav /> */}
         <h1 className='scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl text-center'>
@@ -141,10 +142,21 @@ const SiteHeader: React.FC<SiteHeader> = observer(() => {
               </Form>
             </DialogContent>
           </Dialog>
-          <Button onClick={() => setFilterModalOpen(true)}>Filters</Button>
-          <Button onClick={() => setAddItemModalOpen(true)} variant={'secondary'}>
-            <PlusIcon className='w-4 h-4 mr-2' /> Item
-          </Button>
+          <div className='mt-2 flex flex-row gap-3 items-end'>
+            <div className='flex flex-row items-center gap-3'>
+              <Button onClick={() => setFilterModalOpen(true)}>Filters</Button>
+              <Button onClick={() => setAddItemModalOpen(true)} variant={'secondary'}>
+                <PlusIcon className='w-4 h-4 mr-2' /> Item
+              </Button>
+            </div>
+            <div className='flex flex-row gap-3'>
+              <Input
+                placeholder='Search...'
+                className='w-64 px-3'
+              />
+              <Button>Search</Button>
+            </div>
+          </div>
         </div>
         {/* </div> */}
         {/* <div className='w-96 relative '>

@@ -89,7 +89,7 @@ const ItemCard: React.FC<IItemCardProps> = observer(
             })}
           </div>
 
-          <Button className='' variant={'outline'} onClick={() => onReviewClick(item.id)}>
+          <Button className='' variant={'secondary'} onClick={() => onReviewClick(item.id)}>
             <PlusIcon className='w-4 h-4 mr-2' /> Review
           </Button>
         </CardFooter>
