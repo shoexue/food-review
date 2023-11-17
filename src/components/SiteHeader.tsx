@@ -30,7 +30,7 @@ const FormSchema = z.object({
 
 type IFormData = z.infer<typeof FormSchema>;
 
-interface SiteHeader {}
+interface SiteHeader { }
 
 const SiteHeader: React.FC<SiteHeader> = observer(() => {
   const { settings } = store;
@@ -142,7 +142,7 @@ const SiteHeader: React.FC<SiteHeader> = observer(() => {
             </DialogContent>
           </Dialog>
           <Button onClick={() => setFilterModalOpen(true)}>Filters</Button>
-          <Button onClick={() => setAddItemModalOpen(true)}>
+          <Button onClick={() => setAddItemModalOpen(true)} variant={'secondary'}>
             <PlusIcon className='w-4 h-4 mr-2' /> Item
           </Button>
         </div>

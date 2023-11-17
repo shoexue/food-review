@@ -10,7 +10,7 @@ const StarMeter: React.FC<IStarMeterProps> = ({ stars }) => {
   // kinda jank but works :)
   return (
     <div
-      className='overflow-hidden whitespace-nowrap'
+      className='overflow-hidden whitespace-nowrap text-secondary'
       style={{ width: `${stars * 16}px` }}
     >
       {Array.from(Array(10)).map((v, i) => {

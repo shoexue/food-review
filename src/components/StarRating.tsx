@@ -29,12 +29,12 @@ const StarRating: React.FC<StarRatingProps> = ({ max = 10 }) => {
           <div key={i}>
             {rating > i ? (
               <StarIconSolid
-                className={`w-6 h-6 cursor-pointer text-yellow-400`}
+                className={`w-6 h-6 cursor-pointer text-secondary`}
                 onClick={(e) => onClick(i + 1)}
               />
             ) : (
               <StarIconOutline
-                className={`w-6 h-6 cursor-pointer text-yellow-400`}
+                className={`w-6 h-6 cursor-pointer text-secondary`}
                 onClick={(e) => onClick(i + 1)}
               />
             )}
