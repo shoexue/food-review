@@ -1,6 +1,6 @@
 'use client'; //Form needs use client
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -60,7 +60,7 @@ const FormSchema = z.object({
   image: z
     // .instanceof(File)
     .any()
-    // .refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 5MB.`)
+    // .default(new File([], ""))
     .optional(),
 });
 
@@ -180,7 +180,15 @@ const ReviewModal: React.FC<IReviewButtonProps> = ({
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Image</FormLabel>
-                  <Input id="image" type="file" className='' accept=".png,.jpeg,.jpg" {...field} />
+                  <Input
+                    id="image"
+                    type="file"
+                    className=''
+                    accept=".png,.jpeg,.jpg"
+                    multiple={false}
+                    {...field}
+                  // onChange={handleChange}
+                  />
                   <FormMessage />
                 </FormItem>
               )}
