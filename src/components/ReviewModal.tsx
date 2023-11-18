@@ -11,7 +11,7 @@ import {
   DialogFooter,
 } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
-import { toast } from '@/components/ui/use-toast';
+// import { toast } from '@/components/ui/use-toast';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -31,9 +31,6 @@ import StarRating from './StarRating';
 import { store } from '@/lib/types';
 import { makeReview } from '@/lib/review/make-review';
 // import { toast } from "@/components/ui/use-toast"
-
-const MAX_FILE_SIZE = 5000000;
-const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
 const FormSchema = z.object({
   review: z
